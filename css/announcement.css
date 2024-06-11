@@ -1,0 +1,123 @@
+/* 基础样式 */
+body {
+  font-family: "Arial", sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 20px;
+}
+
+/* 头部样式 */
+header {
+  background: #00ced1;
+  color: #fff;
+  padding: 10px 20px;
+  text-align: center;
+  border-bottom: 3px solid #ddd;
+}
+
+header h1 {
+  margin: 0;
+}
+
+/* 返回按钮样式 */
+#backButton {
+  position: absolute;
+  left: 20px;
+  top: 35px;
+  padding: 5px 10px;
+  cursor: pointer;
+  background-color: #00ced1;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  font-size: 1.4rem; /* 设置字体大小以适应箭头大小 */
+}
+
+#backButton::before {
+  content: "\2190"; /* 箭头左指的Unicode字符 */
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+#backButton:hover {
+  background-color: #4993e2;
+}
+
+/* 公告容器样式 */
+#announcementsContainer {
+  margin: 20px auto;
+  padding: 0;
+  max-width: 800px; /* 限制最大宽度 */
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* 公告样式 */
+.announcement {
+  margin-bottom: 1rem;
+  padding: 1.5rem;
+  border-bottom: 1px solid #eee;
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+.announcement:first-of-type {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.announcement:last-of-type {
+  border-bottom: none;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+/* 分页导航样式 */
+#pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+#pagination button {
+  margin: 0 5px;
+  padding: 8px 15px;
+  cursor: pointer;
+  border: 1px solid #007bff;
+  background-color: #fff;
+  color: #007bff;
+  border-radius: 4px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+#pagination button:hover,
+#pagination button:focus {
+  background-color: #007bff;
+  color: #fff;
+}
+
+#pagination button.active {
+  background-color: #007bff;
+  color: #fff;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  #announcementsContainer {
+    margin: 10px;
+    padding: 10px;
+  }
+
+  .announcement {
+    padding: 1rem;
+  }
+
+  #pagination button {
+    padding: 6px 12px;
+  }
+}

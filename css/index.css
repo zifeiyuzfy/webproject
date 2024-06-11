@@ -1,0 +1,230 @@
+/* index.css */
+body {
+    display: flex;
+    flex-direction: column;
+    /* 确保body有最小高度，以便包含整个页面内容 */
+    min-height: 100vh;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background-color: #f5f7fa; 
+    color: #303133; 
+    padding: 0;
+}
+
+header {
+    background-color: #00ced1 !important; 
+    color: #f0f8ff;
+    height: 70px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, .24);
+    padding: 0 20px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    position: relative; /* 允许绝对定位 */
+}
+
+.user-info {
+    position: absolute;
+    top: 20px;
+    right: 20px; 
+    cursor: pointer;
+}
+  
+.user-avatar {
+    width: 45px; 
+    height: 45px; 
+    border-radius: 25px; /* 圆形头像 */
+}
+  
+.user-actions {
+    display: none; 
+    position: absolute;
+    background-color: #00ced1 !important;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+}
+  
+.user-action {
+    margin: 5px 0;
+    text-align: center;
+}
+  
+.user-info:hover .user-actions {
+    display: block;
+}
+  
+#logo-container img {
+    max-height: 50px;
+}
+
+.main-container {
+    flex: 1; 
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.main-content {
+    flex: 1;
+}
+
+.side-menu {
+    width: 200px;
+    height: auto;
+    padding: 10px;
+    left: 0;
+    background-color: #f2f2f2;
+}
+
+.side-menu-list li a {
+    display: block;
+    padding: 8px 0;
+    text-align: left;
+    text-decoration: none;
+    color: #333;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.side-menu-list li a:hover,
+  .side-menu-list li a:focus {
+    background-color: #c6bbbb; /* 浅灰色背景 */
+}
+
+.side-menu-list li.active a {
+    background-color: #c6bbbb; /* 浅灰色背景 */
+}
+
+.toolkit {
+    position: fixed;
+    right: 0;
+    bottom: 50%;
+    transform: translateY(50%);
+    z-index: 100;
+    background-color: white;
+    border-top-right-radius: 0; /* 右上角边框圆角为0 */
+    border-bottom-right-radius: 0; /* 右下角边框圆角为0 */
+    border-top-left-radius: 8px; /* 左上角边框圆角为8px */
+    border-bottom-left-radius: 8px; /* 左下角边框圆角为8px */
+  }
+
+  .toolkit-list {
+    padding: 12px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+  }
+
+  .toolkit-item a {
+    display: block;
+    text-decoration: none;
+    text-align: center;
+  }
+
+  .toolkit-item img {
+    width: 40px;
+    margin-bottom: 0;
+  }
+  
+section {
+    margin-bottom: 20px;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+    padding: 20px;
+}
+
+
+#problem-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+#problem-list li {
+    border-bottom: 1px solid #dcdfe6;
+    padding: 10px 0;
+}
+
+#problem-list li:last-child {
+    border-bottom: none;
+}
+
+#problemListUl .problem-item {
+    cursor: pointer; /* 当鼠标悬停时显示手指图标 */
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+}
+
+#problemListUl .problem-details {
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ddd; /* 添加边框以区分详情区域 */
+    border-top: none; /* 隐藏与问题标题之间的边框 */
+}
+
+aside#sidebar {
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+    padding: 20px;
+    margin: 20px 0;
+}
+
+#search-container input,
+#search-container button {
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 4px;
+    border: 1px solid #dcdfe6;
+}
+
+#search-button {
+    background-color: #409eff;
+    color: white;
+    cursor: pointer;
+}
+
+#search-container button:hover {
+    background-color: #78b2f9;
+}
+
+#reset-button {
+    background-color: white;
+    color: black;           
+    cursor: pointer;        
+}
+
+
+footer {
+    background-color: #00ced1; 
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+}
+
+
+@media (max-width: 768px) {
+    header, main, aside#sidebar {
+        width: 100%;
+        float: none;
+    }
+
+    aside#sidebar {
+        position: static;
+        margin-top: 20px;
+    }
+
+    nav#navbar ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    nav#navbar ul li {
+        margin: 5px 0;
+    }
+}

@@ -32,13 +32,14 @@ function openDB(dbName, version = 1) {
           // autoIncrement: true // 实现自增
         });
         // 创建索引，在后面查询数据的时候可以根据索引查
-        objectStore.createIndex("userid", "userid", { unique: true }); 
+        objectStore.createIndex("userId", "userId", { unique: true }); 
         objectStore.createIndex("password", "password", { unique: false });
         objectStore.createIndex("type", "type", { unique: false });
         objectStore.createIndex("name", "name", { unique: false });
         objectStore.createIndex("submittedlist", "submittedlist", { unique: false });
         objectStore.createIndex("unsubmittedlist", "unsubmittedlist", { unique: false });
         objectStore.createIndex("disable", "disable", { unique: false });
+        objectStore.createIndex("isAllowRegister", "isAllowRegister", { unique: false });
       };
     });
 }

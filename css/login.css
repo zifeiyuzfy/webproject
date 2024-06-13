@@ -89,10 +89,36 @@
 .success{
     color: green;
 }
-.btn.disabled{
+.btn_register.disabled{
     background-color: rgb(243, 209, 158);
     cursor: not-allowed;
 }
-.btn.disabled:hover{
+.btn_register.disabled:hover{
     background-color: rgb(243, 209, 158);
+}
+.btn_register {
+    margin-left: 10px;
+    width: 100px;
+    padding: 10px;
+    border: none;
+    background-color: rgb(235, 181, 99);
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.btn_register:hover {
+    background-color: #e6a23c;
+}
+.btn_guest {
+    margin-left: 10px;
+    width: 100px;
+    padding: 10px;
+    border: none;
+    background-color: #67c23a;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.btn_guest:hover {
+    background-color: rgb(93, 175, 52);
 }

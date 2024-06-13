@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>登录</title>
+    <title>web辅助平台</title>
     <link rel="stylesheet" href="../css/login.css">
     <!-- 引用两种加密库（仍选其一进行加密即可） -->
     <script src="http://172.31.73.236/assets/crypto-js.min.js"></script>
     <script src="http://172.31.73.236/assets/sm3.js"></script>
-    <script src="../js/login.js"></script>
+    <script src="../js/indexedDB.js"></script>
+    <!-- <script src="../js/login.js"></script> -->
 </head>
 <body>
     <div class="topbar">
@@ -16,7 +17,8 @@
             <h3>Web课程教学辅助系统</h3>
         </div>
         <div class="topbar-right">
-            <button class="btn disabled" disabled>点击注册</button>
+            <button id="register" class="btn_register" disabled>点击注册</button>
+            <button id="guestEntry" class="btn_guest">游客登录</button>
         </div>
     </div>
     <div class="container">
@@ -51,7 +53,7 @@
             <button id="tologin" class="btn">登录</button>
           </div>
         </div>
-      </div>
+    </div>
 </body>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -77,17 +79,67 @@ document.addEventListener('DOMContentLoaded', function() {
         alert('请前往忘记密码页面来重置您的密码。');
     });
 });
+
+//检查注册按钮是否可用
+enableDisableRegisterButton();
+function enableDisableRegisterButton() {
+    const registerButton = document.getElementById("register");
+    let db;
+    openDB("OJSystemDB", 1).then(function (db) {
+        db = db;
+        console.log(db);
+        //查找teacher的数据
+        cursorGetDataByIndex(db, 'user', 'type', 'teacher').then(function (indexData) {
+            console.log("cursorGetDataByIndex="+indexData);
+            if(indexData !== false) {
+                // indexData.forEach(element => {
+                //     console.log(element.userId);
+                //     console.log(element.password);
+                // });
+                var i;
+                for(i = 0; i < indexData.length; i++){
+                    if(indexData[i].type == "teacher") {
+                        break;
+                    }
+                }
+                if(indexData[i].isAllowRegister === true) {
+                    registerButton.classList.remove("disabled");
+                    registerButton.disabled = false;
+                } else {
+                    registerButton.classList.add("disabled");
+                    registerButton.disabled = true;
+                }
+                
+            }
+        }).catch(function (error) {
+            console.error(error);
+        });
+        //关闭数据库
+        closeDB(db);
+    });
+}
+// 注册按钮点击事件
+document.getElementById("register").addEventListener("click", function() {
+    event.preventDefault(); // 阻止表单默认提交行为
+    window.location.href = "../html/register.html";
+})
+//游客登录按钮点击事件
+document.getElementById("guestEntry").addEventListener("click", function() {
+    event.preventDefault(); // 阻止表单默认提交行为
+    var userId = "0";
+    window.location.href = "../html/index.html?userId="+userId;
+});
 // 实时验证学号
 function validateStuid(input) {
     let stuid = input.value;
     let stuidError = document.getElementById("stuid-error");
     if (!stuid) {
         stuidError.textContent = "学号不能为空";
-        // input.classList.add("error");
+    } else if(!/^\d+$/.test(stuid)) {
+        stuidError.textContent = "学号仅能包含数字";
     } else {
         stuidError.textContent = "";
     }
-    // enableDisableSubmitButton();
 }
 // 实时验证密码
 function validatePassword(input) {
@@ -99,21 +151,39 @@ function validatePassword(input) {
     } else {
         passwordError.textContent = "";
     }
-    // enableDisableSubmitButton();
 }
-// 提交表单的函数
+// 登录按钮的点击事件
 document.getElementById("tologin").addEventListener("click", function() {
     event.preventDefault(); // 阻止表单默认提交行为
     const stuid = document.getElementById("stuid").value;
     const password = document.getElementById("password").value;
-    let name = "张三";
-    console.log(stuid+ "\n"+sha256Encrypt(password)+"\n"+name);
-    if (!stuid || !password) {
-        alert("学号或密码不能为空");
-    } else {        
+    if (!stuid || !/^\d+$/.test(stuid) || !password) {
+        alert("学号或密码的格式出错");
+    } else {
         // 调用加密函数
         const encryptedPassword = sha256Encrypt(password);
-        alert("学号：" + stuid + "\n加密后的密码是：" + encryptedPassword);
+        //检索数据库是否有该用户
+        openDB("OJSystemDB", 1).then(function (db) {
+            getDataByKey(db, 'user', stuid.toString()).then(function (userData) {
+                console.log(userData.userId);
+                //用户不存在
+                if(userData === false) {
+                    alert("用户不存在");
+                } else {
+                    if(userData.password === encryptedPassword) {
+                        window.location.href = "../html/index.html?userId="+stuid.toString();
+                    } else {
+                        alert("密码错误");
+                    }
+                }
+            }).catch(function (error) {
+                console.error(error);
+            });
+            // alert("学号：" + stuid + "\n加密后的密码是：" + encryptedPassword);
+            closeDB(db);
+        }).catch(function (error) {
+            console.error(error);
+        });
     }
 });
 // 使用SHA-256加密
@@ -134,5 +204,48 @@ document.getElementById("password").addEventListener("input", function() {
 document.getElementById("password").addEventListener("blur", function() {
     validatePassword(this); // 确保失焦时也验证
 });
+// openDB("OJSystemDB", 1).then(function (db) {
+//     // 更新数据
+//     // let updateData = {
+//     //     userId: "0",
+//     //     password: sha256Encrypt("0"),
+//     //     type: "guest",
+//     //     name: "Guest",
+//     //     submittedlist: [],
+//     //     unsubmittedlist: [],
+//     //     disable: false,
+//     //     isAllowRegister: false,
+//     // }
+//     let updateData = {
+//         userId: "1",
+//         password: sha256Encrypt("1"),
+//         type: "teacher",
+//         name: "Teacher",
+//         submittedlist: [],
+//         unsubmittedlist: [],
+//         disable: false,
+//         isAllowRegister: true,
+//     }
+//     // let updateData = {
+//     //     userId: "2",
+//     //     password: sha256Encrypt("2"),
+//     //     type: "student",
+//     //     name: "Student",
+//     //     submittedlist: [],
+//     //     unsubmittedlist: [],
+//     //     disable: false,
+//     //     isAllowRegister: false,
+//     // }
+//     updateDB(db, 'user', updateData).then(function (updateResult) {
+//         console.log(updateResult);
+//         if(updateResult === true)
+//             alert("更新成功");
+//         else
+//             alert("更新失败");
+//     }).catch(function (error) {
+//         console.error(error);
+//     });
+//     closeDB(db);
+// });
 </script>
 </html>

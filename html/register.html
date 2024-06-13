@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>web辅助平台</title>
+    <link rel="stylesheet" href="../css/login.css">
+</head>
+<body>
+    <div class="topbar">
+        <div class="topbar-left">
+            <h3>Web课程教学辅助系统</h3>
+        </div>
+        <div class="topbar-right">
+            <button id="login" class="btn_register">点击登录</button>
+            <button id="guestEntry" class="btn_guest">游客登录</button>
+        </div>
+    </div>
+    <div class="container">
+        <div class="content">
+          <div class="title">
+            <h2>系统注册</h2>
+          </div>
+          <br>
+          <div class="form-group">
+            <div class="input-area">
+              <input type="text" id="stuid" class="form-control" placeholder="学号"/>
+              <!-- 提示信息 -->
+              <span class="result" id="stuid-error"></span>
+            </div>
+          </div>
+          <div class="button-box">
+            <button id="toregister" class="btn" style="margin-top: 20px;">注册</button>
+          </div>
+        </div>
+    </div>
+</body>
+<script>
+// 登录按钮点击事件
+document.getElementById("login").addEventListener("click", function() {
+    event.preventDefault(); // 阻止表单默认提交行为
+    window.location.href = "../html/login.html";
+})
+//游客登录按钮点击事件
+document.getElementById("guestEntry").addEventListener("click", function() {
+    event.preventDefault(); // 阻止表单默认提交行为
+    var userId = "0";
+    window.location.href = "../html/index.html?userId="+userId;
+});
+</script>
+</html>

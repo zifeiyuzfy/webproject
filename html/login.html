@@ -4,9 +4,135 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>登录</title>
+    <link rel="stylesheet" href="../css/login.css">
+    <!-- 引用两种加密库（仍选其一进行加密即可） -->
+    <script src="http://172.31.73.236/assets/crypto-js.min.js"></script>
+    <script src="http://172.31.73.236/assets/sm3.js"></script>
     <script src="../js/login.js"></script>
 </head>
 <body>
-    登录
+    <div class="topbar">
+        <div class="topbar-left">
+            <h3>Web课程教学辅助系统</h3>
+        </div>
+        <div class="topbar-right">
+            <button class="btn disabled" disabled>点击注册</button>
+        </div>
+    </div>
+    <div class="container">
+        <div class="content">
+          <div class="title">
+            <h2>系统登录</h2>
+          </div>
+          <br>
+          <div class="form-group">
+            <div class="input-area">
+              <input type="text" id="stuid" class="form-control" placeholder="学号"/>
+              <!-- 提示信息 -->
+              <span class="result" id="stuid-error"></span>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-area">
+              <input type="password" id="password" class="form-control" placeholder="密码"/>
+              <!-- 提示信息 -->
+              <span class="result" id="password-error"></span>
+            </div>
+          </div>
+          <div class="form-funct">
+            <label>
+                <input type="checkbox" id="remember-me"> 记住账号                
+            </label>
+            <div>
+                <a href="javascript:void(0);" id="forgot-password">忘记密码？</a>
+            </div>                
+          </div>
+          <div class="button-box">
+            <button id="tologin" class="btn">登录</button>
+          </div>
+        </div>
+      </div>
 </body>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 尝试从localStorage获取记住的账号
+    const storedStuid = localStorage.getItem('stuid');
+    if (storedStuid) {
+        document.getElementById('stuid').value = storedStuid;
+        document.getElementById('remember-me').checked = true;
+    }
+
+    // 处理记住账号的复选框
+    document.getElementById('remember-me').addEventListener('change', function(e) {
+        if (e.target.checked) {
+            localStorage.setItem('stuid', document.getElementById('stuid').value);
+        } else {
+            localStorage.removeItem('stuid');
+        }
+    });
+
+    // 处理忘记密码的链接
+    document.getElementById('forgot-password').addEventListener('click', function() {
+        // 这里可以添加跳转到忘记密码页面的逻辑
+        alert('请前往忘记密码页面来重置您的密码。');
+    });
+});
+// 实时验证学号
+function validateStuid(input) {
+    let stuid = input.value;
+    let stuidError = document.getElementById("stuid-error");
+    if (!stuid) {
+        stuidError.textContent = "学号不能为空";
+        // input.classList.add("error");
+    } else {
+        stuidError.textContent = "";
+    }
+    // enableDisableSubmitButton();
+}
+// 实时验证密码
+function validatePassword(input) {
+    let password = input.value;
+    let passwordError = document.getElementById("password-error");
+    if (!password) {
+        passwordError.textContent = "密码不能为空";
+        // input.classList.add("error");
+    } else {
+        passwordError.textContent = "";
+    }
+    // enableDisableSubmitButton();
+}
+// 提交表单的函数
+document.getElementById("tologin").addEventListener("click", function() {
+    event.preventDefault(); // 阻止表单默认提交行为
+    const stuid = document.getElementById("stuid").value;
+    const password = document.getElementById("password").value;
+    let name = "张三";
+    console.log(stuid+ "\n"+sha256Encrypt(password)+"\n"+name);
+    if (!stuid || !password) {
+        alert("学号或密码不能为空");
+    } else {        
+        // 调用加密函数
+        const encryptedPassword = sha256Encrypt(password);
+        alert("学号：" + stuid + "\n加密后的密码是：" + encryptedPassword);
+    }
+});
+// 使用SHA-256加密
+function sha256Encrypt(password) {
+    return CryptoJS.SHA256(password).toString();
+}
+// 给输入框添加input事件监听器，以便实时验证
+document.getElementById("stuid").addEventListener("input", function() {
+    validateStuid(this);
+});
+document.getElementById("stuid").addEventListener("blur", function() {
+    validateStuid(this); // 确保失焦时也验证
+});
+
+document.getElementById("password").addEventListener("input", function() {
+    validatePassword(this);
+});
+document.getElementById("password").addEventListener("blur", function() {
+    validatePassword(this); // 确保失焦时也验证
+});
+</script>
 </html>

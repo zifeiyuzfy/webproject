@@ -1,0 +1,98 @@
+* {
+    margin: 0;
+    box-sizing: border-box;
+    transition: all 0.3s;
+}
+.topbar {
+    background-color: #00ced1 !important; 
+    color: #f0f8ff;
+    height: 70px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, .24);
+    padding: 0 20px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.container {
+    display: flex;
+    justify-content: center;
+    /* align-items: center; */
+    margin-top: 30px;
+    height: 100vh;
+    width: 100vw;
+}
+.content {
+    width: 385px;
+    background-color: #fff;
+    padding: 20px;
+}
+.title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.form-group {
+    margin-bottom: 30px;
+}
+.form-funct {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    outline: none;
+}
+.form-control:focus {
+    border-color: #3498db;
+}
+
+.btn {
+    width: 100px;
+    padding: 10px;
+    border: none;
+    background-color: #409eff;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.btn:hover {
+    background-color: #3498db;
+}
+.button-box {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.input-area{
+    margin-bottom: 10px;
+}
+.result{
+    font-size: small;
+    float: right;
+    clear: right;
+    color: red;
+}
+
+/* 可应用 */
+
+.error{
+    color: red;
+    border-color: red;
+}
+.success{
+    color: green;
+}
+.btn.disabled{
+    background-color: rgb(243, 209, 158);
+    cursor: not-allowed;
+}
+.btn.disabled:hover{
+    background-color: rgb(243, 209, 158);
+}

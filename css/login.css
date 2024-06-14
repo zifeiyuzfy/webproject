@@ -4,7 +4,8 @@
     transition: all 0.3s;
 }
 .topbar {
-    background-color: #00ced1 !important; 
+    /* background-color: #00ced1 !important;  */
+    background-color: #5a738e !important; 
     color: #f0f8ff;
     height: 70px;
     box-shadow: 0 3px 8px rgba(0, 0, 0, .24);

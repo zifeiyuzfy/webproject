@@ -10,6 +10,8 @@
     <script src="http://172.31.73.236/assets/sm3.js"></script>
     <script src="../js/indexedDB.js"></script>
     <!-- <script src="../js/login.js"></script> -->
+    <link rel="stylesheet" type="text/css" href="http://css.huangwx.cn/css/sweetalert.css">
+    <script type="text/javascript" src="http://css.huangwx.cn/js/sweetalert-dev.js"></script>
 </head>
 <body>
     <div class="topbar">
@@ -46,7 +48,7 @@
                 <input type="checkbox" id="remember-me"> 记住账号                
             </label>
             <div>
-                <a href="javascript:void(0);" id="forgot-password">忘记密码？</a>
+                <span id="forgot-password" style="cursor: pointer; color: #676A6C;">忘记密码</span>
             </div>                
           </div>
           <div class="button-box">
@@ -76,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 处理忘记密码的链接
     document.getElementById('forgot-password').addEventListener('click', function() {
         // 这里可以添加跳转到忘记密码页面的逻辑
-        alert('请前往忘记密码页面来重置您的密码。');
+        swal('请联系任课老师重置您的密码');
     });
 });
 
@@ -158,7 +160,8 @@ document.getElementById("tologin").addEventListener("click", function() {
     const stuid = document.getElementById("stuid").value;
     const password = document.getElementById("password").value;
     if (!stuid || !/^\d+$/.test(stuid) || !password) {
-        alert("学号或密码的格式出错");
+        swal("请输入有效的学号或密码","","error");
+        return;
     } else {
         // 调用加密函数
         const encryptedPassword = sha256Encrypt(password);
@@ -168,18 +171,18 @@ document.getElementById("tologin").addEventListener("click", function() {
                 console.log(userData.userId);
                 //用户不存在
                 if(userData === false) {
-                    alert("用户不存在");
+                    swal("用户不存在","","error");
                 } else {
                     if(userData.password === encryptedPassword) {
                         window.location.href = "../html/index.html?userId="+stuid.toString();
                     } else {
-                        alert("密码错误");
+                        swal("密码错误","","error");   
                     }
                 }
             }).catch(function (error) {
                 console.error(error);
             });
-            // alert("学号：" + stuid + "\n加密后的密码是：" + encryptedPassword);
+            // swal("学号：" + stuid + "\n加密后的密码是：" + encryptedPassword);
             closeDB(db);
         }).catch(function (error) {
             console.error(error);
@@ -216,16 +219,16 @@ document.getElementById("password").addEventListener("blur", function() {
 //     //     disable: false,
 //     //     isAllowRegister: false,
 //     // }
-//     let updateData = {
-//         userId: "1",
-//         password: sha256Encrypt("1"),
-//         type: "teacher",
-//         name: "Teacher",
-//         submittedlist: [],
-//         unsubmittedlist: [],
-//         disable: false,
-//         isAllowRegister: true,
-//     }
+//     // let updateData = {
+//     //     userId: "1",
+//     //     password: sha256Encrypt("1"),
+//     //     type: "teacher",
+//     //     name: "Teacher",
+//     //     submittedlist: [],
+//     //     unsubmittedlist: [],
+//     //     disable: false,
+//     //     isAllowRegister: true,
+//     // }
 //     // let updateData = {
 //     //     userId: "2",
 //     //     password: sha256Encrypt("2"),
@@ -239,9 +242,9 @@ document.getElementById("password").addEventListener("blur", function() {
 //     updateDB(db, 'user', updateData).then(function (updateResult) {
 //         console.log(updateResult);
 //         if(updateResult === true)
-//             alert("更新成功");
+//             swal("更新成功","","success");
 //         else
-//             alert("更新失败");
+//             swal("更新失败","","success");
 //     }).catch(function (error) {
 //         console.error(error);
 //     });

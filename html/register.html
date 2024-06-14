@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>web辅助平台</title>
     <link rel="stylesheet" href="../css/login.css">
+    <!-- 引用两种加密库（仍选其一进行加密即可） -->
+    <script src="http://172.31.73.236/assets/crypto-js.min.js"></script>
+    <script src="http://172.31.73.236/assets/sm3.js"></script>
+    <script src="../js/indexedDB.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://css.huangwx.cn/css/sweetalert.css">
+    <script type="text/javascript" src="http://css.huangwx.cn/js/sweetalert-dev.js"></script>
 </head>
 <body>
     <div class="topbar">
@@ -47,5 +53,101 @@ document.getElementById("guestEntry").addEventListener("click", function() {
     var userId = "0";
     window.location.href = "../html/index.html?userId="+userId;
 });
+// 实时验证学号
+function validateStuid(input) {
+    let stuid = input.value;
+    let stuidError = document.getElementById("stuid-error");
+    if (!stuid) {
+        stuidError.textContent = "学号不能为空";
+    } else if(!/^\d+$/.test(stuid)) {
+        stuidError.textContent = "学号仅能包含数字";
+    } else {
+        stuidError.textContent = "";
+    }
+}
+// 给输入框添加input事件监听器，以便实时验证
+document.getElementById("stuid").addEventListener("input", function() {
+    validateStuid(this);
+});
+document.getElementById("stuid").addEventListener("blur", function() {
+    validateStuid(this); // 确保失焦时也验证
+});
+// 注册按钮点击事件
+document.getElementById("toregister").addEventListener("click", function() {
+    event.preventDefault(); // 阻止表单默认提交行为
+    const stuid = document.getElementById("stuid").value;
+    if (!stuid || !/^\d+$/.test(stuid)) {
+        swal("请输入有效的学号", "", "error");
+    } else {
+        // 调用加密函数,默认密码为学号
+        const encryptedPassword = sha256Encrypt(stuid);
+        //检索数据库是否有该用户
+        openDB("OJSystemDB", 1).then(function (db) {
+            getDataByKey(db, 'user', stuid.toString()).then(function (userData) {
+                //用户不存在
+                if(userData === false) {
+                    //插入数据
+                    let data = {
+                        userId: stuid.toString(),
+                        password: encryptedPassword,
+                        type: "student",
+                        name: stuid,
+                        submittedlist: [],
+                        unsubmittedlist: [],
+                        disable: false,
+                        isAllowRegister: false,
+                    }
+                    addData(db, "user", data).then(function (addResult) {
+                        console.log(addResult);
+                        if(addResult === true) {
+                            swal({ 
+                                title: "注册成功！", 
+                                type: "success",
+                                showCancelButton: false, 
+                                // showconfirmButton: true,
+                                confirmButstonColor: "#DD6B55",
+                                confirmButtonText: "确定", 
+                                closeOnCancel: true	
+                                },
+                                function(isConfirm){ 
+                                if (isConfirm) {
+                                    closeDB(db);
+                                    window.location.href = "../html/login.html";
+                                }
+                            });
+                        }
+                        else {
+                            swal({ 
+                                title: "注册失败！", 
+                                text: "请重试！",
+                                type: "error",
+                                showCancelButton: false, 
+                                // showconfirmButton: true,
+                                confirmButstonColor: "red",
+                                confirmButtonText: "确定", 
+                                closeOnConfirm: true	
+                                }
+                            );
+                        }
+                    }).catch(function (error) {
+                        console.error(error);
+                    });
+                } else {
+                    swal("该学号已被注册","","error");
+                }
+            }).catch(function (error) {
+                console.error(error);
+            });
+            // swal("学号：" + stuid + "\n加密后的密码是：" + encryptedPassword);
+            // closeDB(db);
+        }).catch(function (error) {
+            console.error(error);
+        });            
+    }
+});
+// 使用SHA-256加密
+function sha256Encrypt(password) {
+    return CryptoJS.SHA256(password).toString();
+}
 </script>
 </html>

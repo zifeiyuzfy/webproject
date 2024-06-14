@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web课程教学辅助系统</title>
+    <!-- <link rel="stylesheet" href="../css/index.css" /> -->
+    <link rel="stylesheet" href="../css/test.css" />
+    <link rel="stylesheet" href="../css/font-awesome.css" />
+    <script src="../js/index.js" defer></script>
+    <script src="../js/indexedDB.js"></script>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        scroll-behavior: smooth;
+      }
+      body {
+        overflow: hidden;
+        position: relative;
+      }
+      .navbar {
+        position: relative;
+        width: 100vm;
+      }
+      .navbar input {
+        display: none;
+      }
+      .navbar label {
+        position: absolute;
+        top: 0;
+        left: 70px;
+        width: 100%;
+        height: 43px;
+        padding-left: 20px;
+        font-size: 30px;
+        color: #5a738e;
+        background-color: #ededed;
+        border: 1px solid #d9dee4;
+        cursor: pointer;
+        transition: all 0.5s;
+      }
+      .navbar ul {
+        overflow: hidden;
+        list-style: none;
+        width: 70px;
+        height: 100vh;
+        background-color: #2a3f54;
+        transition: all 0.5s;
+      }
+      .navbar ul li {
+        height: 70px;
+        margin-bottom: 10px;
+      }
+      /* :first-child选择器 选择到ul下面的第一个元素 */
+      .navbar ul li:first-child {
+        /* 弹性布局 让元素在该盒子内垂直+水平居中 */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0 10px;
+      }
+      .navbar ul li:first-child img {
+        width: 40px;
+        border-radius: 50%;
+      }
+      .navbar ul li:first-child span {
+        /* 先把文字隐藏起来 */
+        display: none;
+        color: #fff;
+        /* 文字禁止换行 */
+        white-space: nowrap;
+        padding-left: 10px;
+        font-size: 18px;
+      }
+      .navbar ul li a {
+        /* 弹性布局 */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* 这个属性改变了弹性盒子的主轴方向 现在主轴方向向下 元素也就垂直排列 */
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        color: #fff;
+        /* 取消文字的下划线 */
+        text-decoration: none;
+      }
+      .navbar ul li a i {
+        font-size: 25px;
+        margin-bottom: 10px;
+      }
+      .navbar ul li a span {
+        font-size: 10px;
+        white-space: nowrap;
+      }
+      .navbar ul li a:hover {
+        color: #fff;
+        background-color: #35495d;
+      }
+      /* :checked选择器判断复选框是否被选中 */
+      /* +是相邻兄弟选择器 找到了input的下一个兄弟label */
+      .navbar input:checked + label {
+        left: 200px;
+      }
+      /* ~也是兄弟选择器 但是可以找到隔了几代的兄弟 */
+      .navbar input:checked ~ ul {
+        width: 200px;
+      }
+      .navbar input:checked ~ ul li:first-child {
+        /* 改变了弹性项目在弹性盒子内的水平排列方式为从开头排序 */
+        justify-content: flex-start;
+      }
+      .navbar input:checked ~ ul li:first-child span {
+        /* 文字显示 */
+        display: block;
+      }
+      .navbar input:checked ~ ul li a {
+        /* 改变了主轴的方向为默认值 水平排列 */
+        flex-direction: row;
+        /* 改变了弹性项目在弹性盒子内的水平排列方式为从开头排序 */
+        justify-content: flex-start;
+      }
+      .navbar input:checked ~ ul li a i {
+        font-size: 20px;
+        margin: 0 15px;
+      }
+      .navbar input:checked ~ ul li a span {
+        font-size: 15px;
+      }
+
+      .user-profile {
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        cursor: pointer;
+      }
+
+      .user-avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        transition: transform 0.3s ease;
+      }
+
+      .user-avatar:hover {
+        transform: scale(1.1);
+      }
+
+      .user-options {
+        position: absolute;
+        background-color: #fff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+        padding: 5px 0;
+        display: none;
+        top: 60px;
+        right: 0;
+      }
+
+      .user-options a {
+        display: block;
+        padding: 5px 15px;
+        text-decoration: none;
+        color: #333;
+      }
+
+      .user-options a:hover {
+        background-color: #f4f4f4;
+      }
+
+      /* 回到顶部 */
+      .toolkit a {
+        position: fixed; /* 固定定位，相对于浏览器窗口 */
+        right: 20px; /* 距离右侧20px */
+        bottom: 20px;
+        width: 150px;
+        height: 174px;
+        background: url("../static/back.png") no-repeat;
+        background-size: cover;
+        z-index: 999;
+      }
+      .toolkit a:hover {
+        animation: back 0.5s steps(5) infinite;
+      }
+      @keyframes back {
+        from {
+          background-position: 0 0;
+        }
+        to {
+          background-position: -750px 0;
+        }
+      }
+
+      /* 美化模态窗口样式 */
+      .modal {
+        display: none; /* 默认隐藏 */
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+
+      /* 模态内容框 */
+      .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+        border-radius: 5px;
+      }
+
+      /* 模态窗口头部 */
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      /* 模态窗口主体 */
+      .modal-body {
+        padding: 20px 0;
+      }
+
+      /* 模态窗口底部 */
+      .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 10px;
+        border-top: 1px solid #ddd;
+      }
+
+      .close {
+        color: #aaa;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <input type="checkbox" id="checkbox" />
+      <!-- 复选框的id属性值和label元素的for属性值必须是相同的,才能够通过点击label选中复选框 -->
+      <label for="checkbox">
+        <i class="fa fa-bars"></i>
+      </label>
+      <div class="user-profile">
+        <img src="../static/user.jpg" alt="User Avatar" class="user-avatar" />
+        <div class="user-options" style="display: none">
+          <!-- 用户选项将通过JavaScript动态生成 -->
+        </div>
+      </div>
+      <ul>
+        <li>
+          <img src="../static/house.webp" alt="" />
+          <span>Web校验平台</span>
+        </li>
+        <li>
+          <a href="../html/index.html">
+            <i class="fa fa-home"></i>
+            <span>首页</span>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)">
+            <i class="fa fa-sitemap"></i>
+            <span>提交问题</span>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)">
+            <i class="fa fa-shopping-cart"></i>
+            <span>发布问题</span>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)">
+            <i class="fa fa-user"></i>
+            <span>用户管理</span>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)">
+            <i class="fa fa-windows"></i>
+            <span>自测题库</span>
+          </a>
+        </li>
+      </ul>
+      <div class="toolkit">
+        <a href="#"> </a>
+      </div>
+    </div>
+    <!-- 个人中心模态窗口 -->
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="close">&times;</span>
+          <h2>个人中心</h2>
+        </div>
+        <div class="modal-body">
+          <!-- 这里是个人信息表单 -->
+          <form>
+            <label for="avatar">头像:</label>
+            <input type="file" id="avatar" name="avatar" />
+            <label for="nickname">昵称:</label>
+            <input type="text" id="nickname" name="nickname" />
+            <label for="signature">签名档:</label>
+            <textarea id="signature" name="signature"></textarea>
+            <label for="todo">个人待办事项:</label>
+            <input type="text" id="todo" name="todo" />
+            <!-- 更多输入项可以继续添加 -->
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button id="saveProfile">保存</button>
+          <button id="cancelProfile">取消</button>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var userProfile = document.querySelector(".user-profile");
+      var userOptions = document.querySelector(".user-options");
+      var type = "teacher"; // 假设用户类型已经确定为 teacher，实际应用中应该从服务器获取
+
+      // 根据用户类型动态生成用户选项
+      populateUserOptions(userOptions, type);
+
+      // 点击用户头像显示/隐藏选项
+      userProfile.addEventListener("click", function (event) {
+        event.stopPropagation(); // 阻止事件冒泡，避免点击选项时关闭菜单
+        userOptions.style.display =
+          userOptions.style.display === "block" ? "none" : "block";
+      });
+
+      // 点击用户选项时隐藏选项
+      var userOptionLinks = document.querySelectorAll(".user-options a");
+      userOptionLinks.forEach(function (link) {
+        link.addEventListener("click", function (event) {
+          event.preventDefault(); // 阻止链接的默认行为
+          // 根据链接的href属性执行不同的操作
+          if (this.getAttribute("href") === "/profile.html") {
+            openProfileModal(); // 打开个人中心模态窗口
+          } else if (this.getAttribute("href") === "/logout.html") {
+            window.location.href = "login.html"; // 跳转到登录页面
+          }
+          userOptions.style.display = "none"; // 点击选项后隐藏选项
+        });
+      });
+
+      // 点击模态窗口外部区域关闭模态窗口
+      window.addEventListener("click", function (event) {
+        if (event.target === modal) {
+          modal.style.display = "none";
+        }
+      });
+
+      // 模态窗口的关闭按钮
+      closeBtn.onclick = function () {
+        modal.style.display = "none";
+      };
+
+      // 保存个人信息和取消按钮的逻辑
+      saveBtn.onclick = function () {
+        // 这里添加保存个人信息的逻辑
+      };
+      cancelBtn.onclick = function () {
+        modal.style.display = "none";
+      };
+
+      // 函数定义
+      function populateUserOptions(optionsElement, userType) {
+        if (userType === "teacher" || userType === "student") {
+          optionsElement.innerHTML = `
+        <a href="/profile.html">个人中心</a>
+        <a href="/logout.html">退出登录</a>
+      `;
+        } else if (userType === "guest") {
+          optionsElement.innerHTML = `
+        <a href="/register.html">注册</a>
+        <a href="/login.html">登录</a>
+      `;
+        }
+      }
+
+      function openProfileModal() {
+        // 这里添加打开模态窗口的逻辑
+        modal.style.display = "block";
+      }
+    });
+  </script>
+</html>

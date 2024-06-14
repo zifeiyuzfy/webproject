@@ -17,14 +17,20 @@ function openDB() {
         // 创建存储库
         objectStore = db.createObjectStore("user", { keyPath: "userId" });
         // 创建索引，在后面查询数据的时候可以根据索引查
-        objectStore.createIndex("userId", "userId", { unique: true }); 
+        objectStore.createIndex("userId", "userId", { unique: true });
         objectStore.createIndex("password", "password", { unique: false });
         objectStore.createIndex("type", "type", { unique: false });
         objectStore.createIndex("name", "name", { unique: false });
-        objectStore.createIndex("submittedlist", "submittedlist", { unique: false });
-        objectStore.createIndex("unsubmittedlist", "unsubmittedlist", { unique: false });
+        objectStore.createIndex("submittedlist", "submittedlist", {
+          unique: false,
+        });
+        objectStore.createIndex("unsubmittedlist", "unsubmittedlist", {
+          unique: false,
+        });
         objectStore.createIndex("disable", "disable", { unique: false });
-        objectStore.createIndex("isAllowRegister", "isAllowRegister", { unique: false });
+        objectStore.createIndex("isAllowRegister", "isAllowRegister", {
+          unique: false,
+        });
       }
       // 创建 'problem' 对象存储
       if (!db.objectStoreNames.contains("problem")) {
@@ -68,7 +74,7 @@ function storeDefaultData() {
     const users = [
       {
         userId: "0",
-        password: "0",
+        password: sha256Encrypt("0"),
         type: "guest",
         name: "Guest",
         submittedlist: [],
@@ -78,7 +84,7 @@ function storeDefaultData() {
       },
       {
         userId: "1",
-        password: "1",
+        password: sha256Encrypt("1"),
         type: "teacher",
         name: "Teacher",
         submittedlist: [],
@@ -88,7 +94,7 @@ function storeDefaultData() {
       },
       {
         userId: "2",
-        password: "2",
+        password: sha256Encrypt("2"),
         type: "student",
         name: "Guest",
         submittedlist: [],
@@ -267,15 +273,14 @@ function storeDefaultData() {
 }
 // 当页面加载完成时触发DOMContentLoaded事件
 document.addEventListener("DOMContentLoaded", function () {
-    // 调用openDB函数打开数据库，并使用then处理数据库成功打开的情况
-    openDB()
-      .then(() => {
-        // 存储默认数据
-        storeDefaultData();        
-      })
-      .catch((error) => {
-        // 处理数据库初始化失败的情况
-        console.error("数据库初始化失败:", error);
-      });
-  });
-  
+  // 调用openDB函数打开数据库，并使用then处理数据库成功打开的情况
+  openDB()
+    .then(() => {
+      // 存储默认数据
+      storeDefaultData();
+    })
+    .catch((error) => {
+      // 处理数据库初始化失败的情况
+      console.error("数据库初始化失败:", error);
+    });
+});

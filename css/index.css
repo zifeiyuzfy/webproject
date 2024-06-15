@@ -172,6 +172,14 @@ body {
 .toolkit a:hover {
   animation: back 0.5s steps(5) infinite;
 }
+@keyframes back {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -750px 0;
+  }
+}
 
 /* 美化模态窗口样式 */
 .modal {

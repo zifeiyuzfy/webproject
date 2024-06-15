@@ -20,7 +20,7 @@ function initializeUserOptions() {
       // 从查询字符串中获取userId
       const userId = queryParams.get("userId");
       console.log("获得的userId为:", userId);
-      return getDataByKey(db, "user", userId.toString()); // 使用return以等待promise
+      return getDataByKey(db, "user", userId ? userId.toString() : "0"); // 使用return以等待promise
     })
     .then(function (userData) {
       var userOptions = document.querySelector(".user-actions");

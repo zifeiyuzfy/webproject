@@ -202,11 +202,13 @@
                 if (userData === false) {
                   swal("用户不存在", "", "error");
                 } else {
-                  if (userData.password === encryptedPassword) {
+                  if (userData.password !== encryptedPassword) {
+                    swal("密码错误", "", "error");
+                  } else if (userData.disabled === true) {
+                    swal("该账户已被禁用", "", "error");
+                  } else {                    
                     window.location.href =
                       "../html/index.html?userId=" + stuid.toString();
-                  } else {
-                    swal("密码错误", "", "error");
                   }
                 }
               })

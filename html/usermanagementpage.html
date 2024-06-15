@@ -19,6 +19,7 @@
     <script src="http://172.31.73.236/assets/crypto-js.min.js"></script>
     <link rel="stylesheet" href="../css/usersmanagement.css">
     <script src="../js/indexedDB.js"></script>
+    <script src="../js/userDetail.js"></script>
     <style>
       * {
         padding: 0;
@@ -491,6 +492,7 @@
           if (userActionPersonal) {
             userActionPersonal.addEventListener("click", function (event) {
               event.preventDefault();
+              initializeUserDetail(currentUserID);
               modal.style.display = "block";
             });
           }

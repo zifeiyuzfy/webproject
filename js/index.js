@@ -1,5 +1,6 @@
 let db;
 var modal = document.getElementById("myModal");
+var currentUserID;//当前用户ID
 // 将数据库操作移到单独的函数中
 function initializeUserOptions() {
   openDB("OJSystemDB", 1)
@@ -20,6 +21,7 @@ function initializeUserOptions() {
       // 从查询字符串中获取userId
       const userId = queryParams.get("userId");
       console.log("获得的userId为:", userId);
+      currentUserID = userId;
       return getDataByKey(db, "user", userId.toString()); // 使用return以等待promise
     })
     .then(function (userData) {
@@ -36,6 +38,8 @@ function initializeUserOptions() {
       if (userActionPersonal) {
         userActionPersonal.addEventListener("click", function (event) {
           event.preventDefault();
+          //初始化个人弹窗
+          initializeUserDetail(currentUserID);
           modal.style.display = "block";
         });
       }
@@ -240,4 +244,8 @@ function fillDetailsContent(container, problem) {
         }</p>
         <p><strong>答案点评:</strong> ${problem.evaluation || "暂无点评"}</p>
     `;
+}
+// 使用SHA-256加密
+function sha256Encrypt(password) {
+  return CryptoJS.SHA256(password).toString();
 }

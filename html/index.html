@@ -5,52 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Web课程教学辅助系统</title>
     <link rel="stylesheet" href="../css/index.css" />
+    <link rel="stylesheet" href="../css/font-awesome.css" />
     <script src="../js/index.js" defer></script>
+    <script src="../js/indexedDB.js"></script>
   </head>
-
   <body>
-    <header>
-      <div id="logo-container">
-        <img src="../static/house.webp" alt="页首Logo" id="logo" />
-      </div>
-      <h2>&nbsp;&nbsp;欢迎来到Web课程教学辅助系统</h2>
-      <!-- 用户信息和头像容器 -->
-      <div id="user-info" class="user-info">
-        <img
-          src="../static/user.jpg"
-          alt="用户头像"
-          id="user-avatar"
-          class="user-avatar"
-        />
-        <div id="user-actions" class="user-actions">
-          <!-- 用户为游客时显示 -->
-          <p id="guest-actions" class="user-action">注册 登录</p>
-          <!-- 用户登录后显示 -->
-          <p id="user-action" class="user-action" style="display: none">
-            退出登录
-          </p>
-        </div>
-      </div>
-    </header>
+    <div class="navbar">
+      <input type="checkbox" id="checkbox" />
+      <!-- 复选框的id属性值和label元素的for属性值必须是相同的,才能够通过点击label选中复选框 -->
+      <label for="checkbox">
+        <i class="fa fa-bars"></i>
+      </label>
 
+      <ul>
+        <li>
+          <img src="../static/house.webp" alt="" />
+          <span>Web校验平台</span>
+        </li>
+        <li class="active">
+          <a href="../html/index.html">
+            <i class="fa fa-home"></i>
+            <span>首页</span>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)">
+            <i class="fa fa-location-arrow"></i>
+            <span>提交问题</span>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)">
+            <i class="fa fa-edit"></i>
+            <span>发布问题</span>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)">
+            <i class="fa fa-user"></i>
+            <span>用户管理</span>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)">
+            <i class="fa fa-desktop"></i>
+            <span>自测题库</span>
+          </a>
+        </li>
+      </ul>
+      <div class="toolkit">
+        <a href="#"> </a>
+      </div>
+    </div>
+    <div id="user-info" class="user-info">
+      <img
+        src="../static/user.jpg"
+        alt="用户头像"
+        id="user-avatar"
+        class="user-avatar"
+      />
+      <div id="user-actions" class="user-actions"></div>
+    </div>
+    <div class="top-title"></div>
+
+    <!-- 这是放正文的地方 -->
     <div class="main-container">
-      <!-- 侧边菜单栏 -->
-      <aside class="side-menu">
-        <ul class="side-menu-list" type="none">
-          <li class="side-menu-item active">
-            <a href="#">首页</a>
-          </li>
-          <li class="side-menu-item">
-            <a href="#">实验发布</a>
-          </li>
-          <li class="side-menu-item">
-            <a href="#">提交实验</a>
-          </li>
-          <li class="side-menu-item">
-            <a href="#">自测题库</a>
-          </li>
-        </ul>
-      </aside>
       <main class="main-content">
         <section id="announcements">
           <h2>课程通知</h2>
@@ -71,41 +90,34 @@
           <ul id="problemListUl"></ul>
         </section>
       </main>
-      <!-- 右侧工具栏 -->
-      <div class="toolkit">
-        <div class="toolkit-list">
-          <div class="toolkit-item">
-            <a href="#">
-              <img
-                src="http://172.31.73.236/resource/img/toolkit-chat.png"
-                ;
-                class="toolkit-icon"
-              />
-              <div class="toolkit-bottom">联系助教</div>
-            </a>
-          </div>
-
-          <div class="toolkit-item">
-            <a href="#">
-              <img
-                src="http://172.31.73.236/resource/img/toolkit-write.png"
-                ;
-                class="toolkit-icon"
-              />
-              <div class="toolkit-bottom">错误反馈</div>
-            </a>
-          </div>
-
-          <div class="toolkit-item">
-            <a href="#">
-              <img
-                src="http://172.31.73.236/resource/img/toolkit-back.png"
-                ;
-                class="toolkit-icon"
-              />
-              <div class="toolkit-bottom">返回顶部</div>
-            </a>
-          </div>
+    </div>
+    <!-- 个人中心模态窗口 -->
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>个人信息</h2>
+        </div>
+        <div class="modal-body">
+          <form>
+            <label for="avatar">头像:</label>
+            <input type="file" id="avatar" name="avatar" accept="image/*" />
+            <img
+              src="../static/user.jpg"
+              alt="预览头像"
+              id="profile-avatar-preview"
+              style="width: 100px; height: 100px; margin-bottom: 20px"
+            />
+            <label for="nickname">昵称:</label>
+            <input type="text" id="nickname" name="nickname" />
+            <label for="signature">签名档:</label>
+            <textarea id="signature" name="signature"></textarea>
+            <label for="todo">个人待办事项:</label>
+            <textarea id="todo" name="todo"></textarea>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button id="saveProfile">保存</button>
+          <button id="cancelProfile">取消</button>
         </div>
       </div>
     </div>

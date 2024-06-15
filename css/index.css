@@ -1,230 +1,371 @@
-/* index.css */
-body {
-    display: flex;
-    flex-direction: column;
-    /* 确保body有最小高度，以便包含整个页面内容 */
-    min-height: 100vh;
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    background-color: #f5f7fa; 
-    color: #303133; 
-    padding: 0;
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
 }
-
-header {
-    background-color: #00ced1 !important; 
-    color: #f0f8ff;
-    height: 70px;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, .24);
-    padding: 0 20px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    position: relative; /* 允许绝对定位 */
+body {
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden; /* 禁止水平滚动 */
+  min-height: 100vh; /* 确保body至少占据整个视口高度 */
+}
+.navbar {
+  position: absolute;
+  width: 100vm;
+  height: 100%; /* 确保导航栏高度占满整个视口 */
+}
+.navbar input {
+  display: none;
+}
+.navbar label {
+  position: absolute;
+  top: 0;
+  left: 70px;
+  width: 100%;
+  height: 43px;
+  padding-left: 20px;
+  font-size: 30px;
+  color: #5a738e;
+  background-color: #ededed;
+  cursor: pointer;
+  transition: all 0.5s;
+}
+.navbar ul {
+  overflow: hidden;
+  list-style: none;
+  width: 70px;
+  height: 100vh;
+  background-color: #2a3f54;
+  transition: all 0.5s;
+}
+.navbar ul li {
+  height: 70px;
+  margin-bottom: 10px;
+}
+/* :first-child选择器 选择到ul下面的第一个元素 */
+.navbar ul li:first-child {
+  /* 弹性布局 让元素在该盒子内垂直+水平居中 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10px;
+}
+.navbar ul li:first-child img {
+  width: 40px;
+  border-radius: 50%;
+}
+.navbar ul li:first-child span {
+  /* 先把文字隐藏起来 */
+  display: none;
+  color: #fff;
+  /* 文字禁止换行 */
+  white-space: nowrap;
+  padding-left: 10px;
+  font-size: 18px;
+}
+.navbar ul li a {
+  /* 弹性布局 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* 这个属性改变了弹性盒子的主轴方向 现在主轴方向向下 元素也就垂直排列 */
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  color: #fff;
+  /* 取消文字的下划线 */
+  text-decoration: none;
+}
+.navbar ul li a i {
+  font-size: 25px;
+  margin-bottom: 10px;
+}
+.navbar ul li.active a {
+  color: #78b2f9;
+  background-color: #35495d;
+}
+.navbar ul li a span {
+  font-size: 10px;
+  white-space: nowrap;
+}
+.navbar ul li a:hover {
+  color: #fff;
+  background-color: #35495d;
+}
+/* :checked选择器判断复选框是否被选中 */
+/* +是相邻兄弟选择器 找到了input的下一个兄弟label */
+.navbar input:checked + label {
+  left: 200px;
+}
+/* ~也是兄弟选择器 但是可以找到隔了几代的兄弟 */
+.navbar input:checked ~ ul {
+  width: 200px;
+}
+.navbar input:checked ~ ul li:first-child {
+  /* 改变了弹性项目在弹性盒子内的水平排列方式为从开头排序 */
+  justify-content: flex-start;
+}
+.navbar input:checked ~ ul li:first-child span {
+  /* 文字显示 */
+  display: block;
+}
+.navbar input:checked ~ ul li a {
+  /* 改变了主轴的方向为默认值 水平排列 */
+  flex-direction: row;
+  /* 改变了弹性项目在弹性盒子内的水平排列方式为从开头排序 */
+  justify-content: flex-start;
+}
+.navbar input:checked ~ ul li a i {
+  font-size: 20px;
+  margin: 0 15px;
+}
+.navbar input:checked ~ ul li a span {
+  font-size: 15px;
 }
 
 .user-info {
-    position: absolute;
-    top: 20px;
-    right: 20px; 
-    cursor: pointer;
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
 }
-  
+
 .user-avatar {
-    width: 45px; 
-    height: 45px; 
-    border-radius: 25px; /* 圆形头像 */
+  width: 45px;
+  height: 43px;
+  border-radius: 20px;
+  transition: transform 0.3s ease;
 }
-  
+
 .user-actions {
-    display: none; 
-    position: absolute;
-    background-color: #00ced1 !important;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+  display: none;
+  position: absolute;
+  background-color: #5a738e;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
 }
-  
+
 .user-action {
-    margin: 5px 0;
-    text-align: center;
+  margin: 5px 0;
+  text-align: center;
+  color: #fff;
+  text-decoration: none;
 }
-  
+
 .user-info:hover .user-actions {
-    display: block;
+  display: block;
 }
-  
-#logo-container img {
-    max-height: 50px;
+
+/* 回到顶部 */
+.toolkit a {
+  position: fixed; /* 固定定位，相对于浏览器窗口 */
+  right: 20px; /* 距离右侧20px */
+  bottom: 20px;
+  width: 150px;
+  height: 174px;
+  background: url("../static/back.png") no-repeat;
+  background-size: cover;
+  z-index: 999;
+}
+.toolkit a:hover {
+  animation: back 0.5s steps(5) infinite;
+}
+
+/* 美化模态窗口样式 */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5); /* 半透明背景 */
+  align-items: center;
+  justify-content: center;
+}
+
+/* 模态内容框 */
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: auto;
+  max-width: 1000px; /* 设置最大宽度限制 */
+}
+
+/* 模态窗口头部 */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+  text-align: center; /* 标题居中 */
+  border-bottom: none; /* 移除边框 */
+  padding-bottom: 0; /* 移除底部内边距 */
+}
+
+/* 模态窗口主体 */
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  padding: 10px;
+}
+
+/* 模态窗口底部 */
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
+}
+
+/* 表单样式 */
+.modal form {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.modal form input[type="text"],
+.modal form input[type="file"],
+.modal form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.modal form input[type="file"] {
+  padding: 5px 10px;
+}
+.modal button {
+  padding: 10px 20px;
+  margin: 0 5px;
+  border: none;
+  border-radius: 5px;
+  background-color: #5a738e;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  flex-grow: 1; /* 按钮占据可用空间 */
+}
+
+/* 保存按钮样式 */
+#saveProfile {
+  background-color: #1890ff;
+}
+
+/* 取消按钮样式 */
+#cancelProfile {
+  background-color: #dcdfe6;
+}
+
+/* 按钮悬停效果 */
+.modal button:hover {
+  opacity: 0.9;
+}
+
+.top-title {
+  position: absolute;
+  top: 0;
+  left: 70px;
+  width: 100%;
+  height: 43px;
+  background-color: #ededed;
+  /* border: 1px solid #d9dee4; */
+  z-index: -1; /* 设置较低的层叠级别 */
 }
 
 .main-container {
-    flex: 1; 
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+  flex: 1; /* 占据剩余空间 */
+  max-height: calc(100vh - 43px - 50px);
+  padding: 20px; /* 添加内边距 */
+  margin-top: 43px;
+  overflow: auto; /* 如果内容溢出，允许滚动 */
+  margin-left: 200px;
 }
-
-.main-content {
-    flex: 1;
-}
-
-.side-menu {
-    width: 200px;
-    height: auto;
-    padding: 10px;
-    left: 0;
-    background-color: #f2f2f2;
-}
-
-.side-menu-list li a {
-    display: block;
-    padding: 8px 0;
-    text-align: left;
-    text-decoration: none;
-    color: #333;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.side-menu-list li a:hover,
-  .side-menu-list li a:focus {
-    background-color: #c6bbbb; /* 浅灰色背景 */
-}
-
-.side-menu-list li.active a {
-    background-color: #c6bbbb; /* 浅灰色背景 */
-}
-
-.toolkit {
-    position: fixed;
-    right: 0;
-    bottom: 50%;
-    transform: translateY(50%);
-    z-index: 100;
-    background-color: white;
-    border-top-right-radius: 0; /* 右上角边框圆角为0 */
-    border-bottom-right-radius: 0; /* 右下角边框圆角为0 */
-    border-top-left-radius: 8px; /* 左上角边框圆角为8px */
-    border-bottom-left-radius: 8px; /* 左下角边框圆角为8px */
-  }
-
-  .toolkit-list {
-    padding: 12px 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-  }
-
-  .toolkit-item a {
-    display: block;
-    text-decoration: none;
-    text-align: center;
-  }
-
-  .toolkit-item img {
-    width: 40px;
-    margin-bottom: 0;
-  }
-  
 section {
-    margin-bottom: 20px;
-    background-color: white;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
-    padding: 20px;
+  margin-bottom: 20px;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+  padding: 20px;
 }
-
 
 #problem-list ul {
-    list-style: none;
-    padding: 0;
+  list-style: none;
+  padding: 0;
 }
 
 #problem-list li {
-    border-bottom: 1px solid #dcdfe6;
-    padding: 10px 0;
+  border-bottom: 1px solid #dcdfe6;
+  padding: 10px 0;
 }
 
 #problem-list li:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 #problemListUl .problem-item {
-    cursor: pointer; /* 当鼠标悬停时显示手指图标 */
-    border-bottom: 1px solid #ddd;
-    margin-bottom: 10px;
-    padding-bottom: 10px;
+  cursor: pointer; /* 当鼠标悬停时显示手指图标 */
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
 }
 
 #problemListUl .problem-details {
-    background-color: #f9f9f9;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ddd; /* 添加边框以区分详情区域 */
-    border-top: none; /* 隐藏与问题标题之间的边框 */
-}
-
-aside#sidebar {
-    background-color: white;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
-    padding: 20px;
-    margin: 20px 0;
+  background-color: #f9f9f9;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ddd; /* 添加边框以区分详情区域 */
+  border-top: none; /* 隐藏与问题标题之间的边框 */
 }
 
 #search-container input,
 #search-container button {
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 4px;
-    border: 1px solid #dcdfe6;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 4px;
+  border: 1px solid #dcdfe6;
 }
 
 #search-button {
-    background-color: #409eff;
-    color: white;
-    cursor: pointer;
+  background-color: #409eff;
+  color: white;
+  cursor: pointer;
 }
 
 #search-container button:hover {
-    background-color: #78b2f9;
+  background-color: #78b2f9;
 }
 
 #reset-button {
-    background-color: white;
-    color: black;           
-    cursor: pointer;        
+  background-color: white;
+  color: black;
+  cursor: pointer;
 }
-
 
 footer {
-    background-color: #00ced1; 
-    color: white;
-    text-align: center;
-    padding: 10px 0;
-}
-
-
-@media (max-width: 768px) {
-    header, main, aside#sidebar {
-        width: 100%;
-        float: none;
-    }
-
-    aside#sidebar {
-        position: static;
-        margin-top: 20px;
-    }
-
-    nav#navbar ul {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    nav#navbar ul li {
-        margin: 5px 0;
-    }
+  background-color: #5a738e;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
 }

@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web课程教学辅助系统</title>
+    <!-- <link rel="stylesheet" href="../css/index.css" /> -->
+    <!-- <link rel="stylesheet" href="../css/test.css" /> -->
+    <link rel="stylesheet" href="../css/font-awesome.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="http://css.huangwx.cn/css/sweetalert.css"
+    />
+    <script
+      type="text/javascript"
+      src="http://css.huangwx.cn/js/sweetalert-dev.js"
+    ></script>
+    <script src="http://172.31.73.236/assets/crypto-js.min.js"></script>
+    <link rel="stylesheet" href="../css/usersmanagement.css">
+    <script src="../js/indexedDB.js"></script>
+    <script src="../js/userDetail.js"></script>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        scroll-behavior: smooth;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        overflow-x: hidden; /* 禁止水平滚动 */
+        min-height: 100vh; /* 确保body至少占据整个视口高度 */
+      }
+      .navbar {
+        position: absolute;
+        width: 100vm;
+        height: 100%; /* 确保导航栏高度占满整个视口 */
+      }
+      .navbar input {
+        display: none;
+      }
+      .navbar label {
+        position: absolute;
+        top: 0;
+        left: 70px;
+        width: 100%;
+        height: 43px;
+        padding-left: 20px;
+        font-size: 30px;
+        color: #5a738e;
+        background-color: #ededed;
+        cursor: pointer;
+        transition: all 0.5s;
+      }
+      .navbar ul {
+        overflow: hidden;
+        list-style: none;
+        width: 70px;
+        height: 100vh;
+        background-color: #2a3f54;
+        transition: all 0.5s;
+      }
+      .navbar ul li {
+        height: 70px;
+        margin-bottom: 10px;
+      }
+      /* :first-child选择器 选择到ul下面的第一个元素 */
+      .navbar ul li:first-child {
+        /* 弹性布局 让元素在该盒子内垂直+水平居中 */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0 10px;
+      }
+      .navbar ul li:first-child img {
+        width: 40px;
+        border-radius: 50%;
+      }
+      .navbar ul li:first-child span {
+        /* 先把文字隐藏起来 */
+        display: none;
+        color: #fff;
+        /* 文字禁止换行 */
+        white-space: nowrap;
+        padding-left: 10px;
+        font-size: 18px;
+      }
+      .navbar ul li a {
+        /* 弹性布局 */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* 这个属性改变了弹性盒子的主轴方向 现在主轴方向向下 元素也就垂直排列 */
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        color: #fff;
+        /* 取消文字的下划线 */
+        text-decoration: none;
+      }
+      .navbar ul li a i {
+        font-size: 25px;
+        margin-bottom: 10px;
+      }
+      .navbar ul li.active a {
+        color: #78b2f9;
+        background-color: #35495d;
+      }
+      .navbar ul li a span {
+        font-size: 10px;
+        white-space: nowrap;
+      }
+      .navbar ul li a:hover {
+        color: #fff;
+        background-color: #35495d;
+      }
+      /* :checked选择器判断复选框是否被选中 */
+      /* +是相邻兄弟选择器 找到了input的下一个兄弟label */
+      .navbar input:checked + label {
+        left: 200px;
+      }
+      /* ~也是兄弟选择器 但是可以找到隔了几代的兄弟 */
+      .navbar input:checked ~ ul {
+        width: 200px;
+      }
+      .navbar input:checked ~ ul li:first-child {
+        /* 改变了弹性项目在弹性盒子内的水平排列方式为从开头排序 */
+        justify-content: flex-start;
+      }
+      .navbar input:checked ~ ul li:first-child span {
+        /* 文字显示 */
+        display: block;
+      }
+      .navbar input:checked ~ ul li a {
+        /* 改变了主轴的方向为默认值 水平排列 */
+        flex-direction: row;
+        /* 改变了弹性项目在弹性盒子内的水平排列方式为从开头排序 */
+        justify-content: flex-start;
+      }
+      .navbar input:checked ~ ul li a i {
+        font-size: 20px;
+        margin: 0 15px;
+      }
+      .navbar input:checked ~ ul li a span {
+        font-size: 15px;
+      }
+
+      .user-info {
+        position: absolute;
+        right: 10px;
+        cursor: pointer;
+      }
+
+      .user-avatar {
+        width: 45px;
+        height: 45px;
+        border-radius: 20px;
+        transition: transform 0.3s ease;
+      }
+
+      .user-actions {
+        display: none;
+        position: absolute;
+        background-color: #5a738e;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+      }
+
+      .user-action {
+        margin: 5px 0;
+        text-align: center;
+        color: #fff;
+        text-decoration: none;
+      }
+
+      .user-info:hover .user-actions {
+        display: block;
+      }
+
+      /* 回到顶部 */
+      .toolkit a {
+        position: fixed; /* 固定定位，相对于浏览器窗口 */
+        right: 20px; /* 距离右侧20px */
+        bottom: 20px;
+        width: 150px;
+        height: 174px;
+        background: url("../static/back.png") no-repeat;
+        background-size: cover;
+        z-index: 999;
+      }
+      .toolkit a:hover {
+        animation: back 0.5s steps(5) infinite;
+      }
+      @keyframes back {
+        from {
+          background-position: 0 0;
+        }
+        to {
+          background-position: -750px 0;
+        }
+      }
+
+      /* 美化模态窗口样式 */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5); /* 半透明背景 */
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* 模态内容框 */
+      .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: auto;
+        max-width: 1000px; /* 设置最大宽度限制 */
+      }
+
+      /* 模态窗口头部 */
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+        text-align: center; /* 标题居中 */
+        border-bottom: none; /* 移除边框 */
+        padding-bottom: 0; /* 移除底部内边距 */
+      }
+
+      /* 模态窗口主体 */
+      .modal-body {
+        display: flex;
+        flex-direction: column;
+        align-items: left;
+        padding: 10px;
+      }
+
+      /* 模态窗口底部 */
+      .modal-footer {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 20px;
+      }
+
+      /* 表单样式 */
+      .modal form {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .modal label {
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .modal form input[type="text"],
+      .modal form input[type="file"],
+      .modal form textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+
+      .modal form input[type="file"] {
+        padding: 5px 10px;
+      }
+      .modal button {
+        padding: 10px 20px;
+        margin: 0 5px;
+        border: none;
+        border-radius: 5px;
+        background-color: #5a738e;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        flex-grow: 1; /* 按钮占据可用空间 */
+      }
+
+      /* 保存按钮样式 */
+      #saveProfile {
+        background-color: #1890ff;
+      }
+
+      /* 取消按钮样式 */
+      #cancelProfile {
+        background-color: #dcdfe6;
+      }
+
+      /* 按钮悬停效果 */
+      .modal button:hover {
+        opacity: 0.9;
+      }
+
+      .top-title {
+        position: absolute;
+        top: 0;
+        left: 70px;
+        width: 100%;
+        height: 43px;
+        background-color: #ededed;
+        /* border: 1px solid #d9dee4; */
+        z-index: -1; /* 设置较低的层叠级别 */
+      }
+
+      .main-container {
+        flex: 1; /* 占据剩余空间 */
+        max-height: calc(100vh - 43px - 50px);
+        padding: 20px; /* 添加内边距 */
+        margin-top: 43px;
+        overflow: auto; /* 如果内容溢出，允许滚动 */
+        margin-left: 200px;
+      }
+
+      footer {
+        background-color: #5a738e;
+        color: white;
+        text-align: center;
+        padding: 10px 0;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <input type="checkbox" id="checkbox" />
+      <!-- 复选框的id属性值和label元素的for属性值必须是相同的,才能够通过点击label选中复选框 -->
+      <label for="checkbox">
+        <i class="fa fa-bars"></i>
+      </label>
+
+      <ul>
+        <li>
+          <img src="../static/house.webp" alt="" />
+          <span>Web校验平台</span>
+        </li>
+        <li>
+          <a href="../html/index.html">
+            <i class="fa fa-home"></i>
+            <span>首页</span>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)">
+            <i class="fa fa-location-arrow"></i>
+            <span>提交问题</span>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)">
+            <i class="fa fa-edit"></i>
+            <span>发布问题</span>
+          </a>
+        </li>
+        <li class="active">
+          <a href="javascript:void(0)">
+            <i class="fa fa-user"></i>
+            <span>用户管理</span>
+          </a>
+        </li>        
+      </ul>
+      <div class="toolkit">
+        <a href="#"> </a>
+      </div>
+    </div>
+    <div id="user-info" class="user-info">
+      <img
+        src="../static/user.jpg"
+        alt="用户头像"
+        id="user-avatar"
+        class="user-avatar"
+      />
+      <div id="user-actions" class="user-actions"></div>
+    </div>
+    <div class="top-title"></div>
+
+    <!-- 这是放正文的地方 -->
+    <div class="main-container">
+      <div class="container">
+        <div class="functionbar">
+          <div class="search-box">
+            <svg t="1718388443425" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4394" width="20" height="20"><path d="M487.936 165.376c149.504 0 271.36 121.856 271.36 271.36s-121.856 271.36-271.36 271.36-271.36-121.856-271.36-271.36 121.856-271.36 271.36-271.36m0-61.44c-183.808 0-332.8 148.992-332.8 332.8s148.992 332.8 332.8 332.8 332.8-148.992 332.8-332.8-148.992-332.8-332.8-332.8z" fill="#62A86F" p-id="4395"></path><path d="M897.024 828.416l-30.208 30.208c-11.776 11.776-31.744 11.776-43.52 0l-163.84-163.84c-11.776-11.776-11.776-31.744 0-43.52l30.208-30.208c11.776-11.776 31.744-11.776 43.52 0l163.84 163.84c11.776 11.776 11.776 31.232 0 43.52z" fill="#62A86F" p-id="4396"></path></svg>
+            <input type="text" placeholder="输入用户id">
+          </div>
+          <div class="free-box">
+            <button id="freeRegister">开启或关闭</button>
+          </div>
+        </div>
+        <!-- 用户列表 -->
+        <table>
+          <tr>
+              <th>用户Id</th>
+              <th>姓名</th>
+              <th>角色</th>
+              <th>禁用操作</th>
+              <th>重置密码</th>
+              <th>删除操作</th>
+          </tr>
+          <tbody id="userTable">
+            <!-- User rows -->
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- 个人中心模态窗口 -->
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>个人信息</h2>
+        </div>
+        <div class="modal-body">
+          <form>
+            <label for="avatar">头像:</label>
+            <input type="file" id="avatar" name="avatar" accept="image/*" />
+            <img
+              src="../static/user.jpg"
+              alt="预览头像"
+              id="profile-avatar-preview"
+              style="width: 100px; height: 100px; margin-bottom: 20px"
+            />
+            <label for="nickname">昵称:</label>
+            <input type="text" id="nickname" name="nickname" />
+            <label for="password">密码:</label>
+            <input type="text" id="password" name="password" />
+            <label for="signature">签名档:</label>
+            <textarea id="signature" name="signature"></textarea>
+            <label for="todo">个人待办事项:</label>
+            <textarea id="todo" name="todo"></textarea>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button id="saveProfile">保存</button>
+          <button id="cancelProfile">取消</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2024 Web课程教学辅助系统</p>
+    </footer>
+  </body>
+  <script>
+    var currentUserID;//当前用户ID
+    var modal = document.getElementById("myModal");
+    // 将数据库操作移到单独的函数中
+    function initializeUserOptions() {
+      openDB("OJSystemDB", 1)
+        .then(function (db) {
+          // 解析当前页面的URL
+          const queryParams = new URLSearchParams(window.location.search);
+          // 从查询字符串中获取userId
+          const userId = queryParams.get("userId");
+          console.log("获得的userId为:", userId);
+          currentUserID = userId;
+          return getDataByKey(db, "user", userId.toString()); // 使用return以等待promise
+        })
+        .then(function (userData) {
+          var userOptions = document.querySelector(".user-actions");
+          var type = userData.type;
+          if (type === "teacher" || type === "student") {
+            userOptions.innerHTML = `<a href="#" class="user-action">个人</a><a href="../html/login.html" class="user-action">退出</a>
+      `;
+          } else if (type === "guest") {
+            userOptions.innerHTML = `<a href="../html/register.html" class="user-action">注册</a><a href="../html/login.html" class="user-action">登录</a>`;
+          }
+          // 确保DOM更新后，再添加事件监听器
+          var userActionPersonal = document.querySelector(
+            '.user-action[href="#"]'
+          );
+          if (userActionPersonal) {
+            userActionPersonal.addEventListener("click", function (event) {
+              event.preventDefault();
+              initializeUserDetail(currentUserID);
+              modal.style.display = "block";
+            });
+          }
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+    }
+
+    // 调用函数以根据用户权限初始化首页
+    initializeUserOptions();
+
+    // 处理文件选择和预览
+    document.addEventListener("DOMContentLoaded", function () {
+      var saveBtn = document.getElementById("saveProfile");
+      var cancelBtn = document.getElementById("cancelProfile");
+      document
+        .getElementById("avatar")
+        .addEventListener("change", function (event) {
+          var file = event.target.files[0];
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            var previewImage = document.getElementById(
+              "profile-avatar-preview"
+            );
+            previewImage.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        });
+
+      // 点击保存按钮后的操作
+      saveBtn.addEventListener("click", function () {
+        // 这里添加保存个人信息的逻辑
+        // 例如：获取表单数据，发送到服务器等
+        console.log("保存个人信息的逻辑");
+        // 隐藏模态窗口
+        modal.style.display = "none";
+      });
+
+      // 点击取消按钮或关闭按钮时隐藏模态窗口
+      cancelBtn.addEventListener("click", function () {
+        modal.style.display = "none";
+      });
+
+      // 允许点击模态窗口外部区域来关闭它
+      window.addEventListener("click", function (event) {
+        if (event.target === modal) {
+          modal.style.display = "none";
+        }
+      });
+
+      // 添加回到顶部按钮的点击事件监听器
+      window.addEventListener("scroll", function () {});
+      var backToTopButton = document.querySelector(".toolkit a");
+
+      // 为按钮添加点击事件监听器
+      backToTopButton.addEventListener("click", function (event) {
+        event.preventDefault(); // 阻止链接默认行为
+
+        // 如果 main-container 存在，滚动到其顶部
+        var mainContainer = document.querySelector(".main-container");
+        mainContainer.scrollTop = 0; // 滚动到顶部
+      });
+    });
+
+
+    // 初始用户列表
+    var users = [
+      {
+        userId: "0",
+        password: "0",
+        type: "guest",
+        name: "Guest",
+        submittedlist: [],
+        unsubmittedlist: [],
+        disable: false,
+        isAllowRegister: true,
+        autograph: "",
+      },
+      {
+        userId: "1",
+        password: "1",
+        type: "teacher",
+        name: "Teacher",
+        submittedlist: [],
+        unsubmittedlist: [],
+        disable: false,
+        isAllowRegister: false,
+        autograph: "",
+      },
+      {
+        userId: "2",
+        password: "2",
+        type: "student",
+        name: "Student", // 修正了名字错误
+        submittedlist: [],
+        unsubmittedlist: [],
+        disable: false,
+        isAllowRegister: false,
+        autograph: "",
+      },
+    ];
+    // 自由注册按钮
+    var freeRegisterBtn = document.getElementById('freeRegister');
+    //从数据库获取学生列表
+    openDB("OJSystemDB", 1).then(function (db) {
+      db = db;
+      //查找teacher的数据
+      cursorGetDataByIndex(db, "user", "type", "student")
+        .then(function (studentsData) {
+          console.log("cursorGetDataByIndex-studentsData=" + studentsData);
+          if (studentsData !== false) {
+            users = studentsData;
+            console.log(users);
+            freeRegisterBtn.textContent = users[0].isAllowRegister ? '关闭注册' : '开启注册';
+            freeRegisterBtn.classList.add('freeRegisterbtn'); // 添加重置密码样式
+            // 初始化渲染用户列表
+            renderUsers();
+          }
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+      //关闭数据库
+      closeDB(db);
+    });
+    // 自由注册点击事件
+    freeRegisterBtn.onclick = function() {
+      openDB("OJSystemDB", 1).then(function (db) {
+        db = db;
+        //修改数据库所有的数据的isAllowRegister
+        cursorGetData(db, 'user').then(function (allData) {
+          console.log("allData="+allData);
+          allData.forEach(element => {
+              //更新数据，只修改isAllowRegister字段
+              let updateData = {
+                userId: element.userId,
+                password: element.password,
+                type: element.type,
+                name: element.name,
+                submittedlist: element.submittedlist,
+                unsubmittedlist: element.unsubmittedlist,
+                disable: element.disable,
+                isAllowRegister: !element.isAllowRegister,
+                autograph: element.autograph,
+              }
+              updateDB(db, 'user', updateData).then(function (updateResult) {
+                if (updateResult === true) {
+                  // 实现自由注册逻辑
+                  users.forEach(user => {
+                    user.isAllowRegister = !user.isAllowRegister;
+                  });
+                  console.log(users);
+                  freeRegisterBtn.textContent = users[0].isAllowRegister ? '关闭注册' : '开启注册';
+                  swal("切换成功", "", "success");
+                } else {
+                  swal("切换失败", "", "error");
+                }
+              }).catch(function (error) {
+                console.error(error);
+              });
+          });
+        }).catch(function (error) {
+            console.error(error);
+        });
+        //关闭数据库
+        // closeDB(db);
+      });
+    };
+    // 动态添加用户到表格
+    function renderUsers() {
+      const table = document.getElementById('userTable');
+      users.forEach(user => {
+        const row = table.insertRow();
+        row.setAttribute('data-user-id', user.userId); // 添加data属性
+        const userIdCell = row.insertCell(0);
+        const nameCell = row.insertCell(1);
+        const typeCell = row.insertCell(2);
+        const disableCell = row.insertCell(3);
+        const resetCell = row.insertCell(4);
+        const deleteCell = row.insertCell(5);
+
+        userIdCell.textContent = user.userId;
+        nameCell.textContent = user.name;
+        typeCell.textContent = user.type;
+
+        let disableButton = document.createElement('button');
+        disableButton.textContent = user.disable ? 'Enable' : 'Disable';
+        if(user.disable) {
+          disableButton.classList.add('abledbtn'); // 添加可用样式
+        } else {
+          disableButton.classList.add('disabledbtn'); // 添加禁用样式
+        }
+        disableButton.onclick = function() {
+          toggleDisableUser(user.userId, disableButton);
+        };
+        disableCell.appendChild(disableButton);
+        
+        let resetButton = document.createElement('button');
+        resetButton.textContent = 'reset';
+        resetButton.classList.add('resetbtn'); // 添加重置密码样式
+        resetButton.onclick = function() {
+          toggleresetUser(user.userId);
+        };
+        resetCell.appendChild(resetButton);
+
+        let deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.classList.add('deletebtn'); // 添加删除用户样式
+        deleteButton.onclick = function() {
+          deleteUser(user.userId);
+        };
+        deleteCell.appendChild(deleteButton);
+      });
+    }
+    // 更新表格中的特定用户行
+    function updateTableRow(userId, user) {
+      const table = document.getElementById('userTable');
+      const row = table.querySelector(`tr[data-user-id="${userId}"]`);
+      if (row) {
+        row.cells[0].textContent = user.userId; // User ID
+        row.cells[1].textContent = user.name; // Name
+        row.cells[2].textContent = user.type; // Type
+        row.cells[3].firstChild.textContent = user.disable ? 'Enable' : 'Disable'; // Disable/Enable button
+        row.cells[4].firstChild.textContent = 'reset'; // Reset button
+        row.cells[5].firstChild.textContent = 'Delete'; // Delete button
+        // 根据禁用状态添加或移除.disabled类
+        if (user.disable) {
+          row.classList.add('disabled');
+        } else {
+          row.classList.remove('disabled');
+        }
+      }
+    }
+
+    // 切换用户的禁用状态
+    function toggleDisableUser(userId, disableButton) {
+      openDB("OJSystemDB", 1).then(function (db) {
+        db = db;
+        getDataByKey(db, "user", userId).then(function (element) {
+          //更新数据，只修改disable字段
+          let updateData = {
+            userId: element.userId,
+            password: element.password,
+            type: element.type,
+            name: element.name,
+            submittedlist: element.submittedlist,
+            unsubmittedlist: element.unsubmittedlist,
+            disable: !element.disable,
+            isAllowRegister: element.isAllowRegister,
+            autograph: element.autograph,
+          }
+          updateDB(db, 'user', updateData).then(function (updateResult) {
+            if (updateResult === true) {
+              const user = users.find(u => u.userId === userId);
+              if (user) {
+                user.disable = !user.disable;
+              }
+              if(user.disable) {
+                disableButton.classList.remove('disabledbtn'); // 移除禁用样式
+                disableButton.classList.add('abledbtn'); // 添加可用样式
+              } else {
+                disableButton.classList.remove('abledbtn'); // 移除可用样式
+                disableButton.classList.add('disabledbtn'); // 添加禁用样式
+              }
+              updateTableRow(userId, user);
+            } else {
+              swal("切换失败", "", "error");
+            }
+          }).catch(function (error) {
+            console.error(error);
+          });
+        }).catch(function (error) {
+            console.error(error);
+        });
+      });
+    }
+
+    // 重置用户的密码
+    function toggleresetUser(userId) {
+      openDB("OJSystemDB", 1).then(function (db) {
+        db = db;
+        getDataByKey(db, "user", userId).then(function (element) {
+          //更新数据，只修改password字段
+          let updateData = {
+            userId: element.userId,
+            password: sha256Encrypt(userId),
+            type: element.type,
+            name: element.name,
+            submittedlist: element.submittedlist,
+            unsubmittedlist: element.unsubmittedlist,
+            disable: element.disable,
+            isAllowRegister: element.isAllowRegister,
+            autograph: element.autograph,
+          }
+          updateDB(db, 'user', updateData).then(function (updateResult) {
+            if (updateResult === true) {
+              swal("密码已重置", "", "success");
+            } else {
+              swal("重置密码失败", "", "error");
+            }
+          }).catch(function (error) {
+            console.error(error);
+          });
+        }).catch(function (error) {
+            console.error(error);
+        });
+      });
+    }
+
+    // 删除用户
+    function deleteUser(userId) {
+      openDB("OJSystemDB", 1).then(function (db) {
+        db = db;
+        deleteDB(db, "user", userId).then(function (deleteResult) {
+          if(deleteResult === true) {
+            const index = users.findIndex(u => u.userId === userId);
+            if (index !== -1) {
+              users.splice(index, 1);
+              const row = document.querySelector(`tr[data-user-id="${userId}"]`);
+              if (row) {
+                row.remove(); // 直接从DOM中删除行
+                swal("删除成功", "", "success");
+              }
+            }
+          }
+          else {
+            swal("删除成功", "", "error");
+          }
+        }).catch(function (error) {
+            console.error(error);
+        });
+      });
+    }
+
+    var filteredUsers = users;
+    // 搜索框输入元素
+    var searchInput = document.querySelector('.search-box input');
+
+    // 搜索功能
+    function searchUsers(event) {
+      // 检查是否按下了回车键
+      if (event.keyCode === 13) {
+        const searchValue = searchInput.value.trim().toLowerCase();
+        if(searchValue === "") {
+          const table = document.getElementById('userTable');
+          table.innerHTML = ''
+          renderUsers();
+          return;
+        }
+        // 过滤用户列表
+        filteredUsers = users.filter(user => user.userId.toLowerCase().includes(searchValue));
+        console.log(filteredUsers);
+        // 重新渲染表格
+        renderfilteredUsers();
+      }
+    }
+
+    // 给搜索框添加事件监听器
+    searchInput.addEventListener('keyup', searchUsers);
+
+    // 重新渲染用户列表的函数，现在接受一个用户数组
+    function renderfilteredUsers() {
+      const table = document.getElementById('userTable');
+      if (filteredUsers.length === 0) {
+        // 如果没有搜索结果，清空表格并添加提示信息
+        table.innerHTML = '';
+        const headerRow = table.insertRow();
+        const headerCell = headerRow.insertCell(0);
+        headerCell.colSpan = 6; // 根据列的数量设置 colspan
+        headerCell.textContent = '没有找到用户';
+        return;
+      } else {
+        // 清空现有行
+        table.innerHTML = '';
+        // 遍历 filteredUsers 而不是原来的 users 数组
+        filteredUsers.forEach(user => {
+          const row = table.insertRow();
+          row.setAttribute('data-user-id', user.userId); // 添加data属性
+          const userIdCell = row.insertCell(0);
+          const nameCell = row.insertCell(1);
+          const typeCell = row.insertCell(2);
+          const disableCell = row.insertCell(3);
+          const resetCell = row.insertCell(4);
+          const deleteCell = row.insertCell(5);
+
+          userIdCell.textContent = user.userId;
+          nameCell.textContent = user.name;
+          typeCell.textContent = user.type;
+
+          let disableButton = document.createElement('button');
+          disableButton.textContent = user.disable ? 'Enable' : 'Disable';
+          if(user.disable) {
+            disableButton.classList.add('abledbtn'); // 添加可用样式
+          } else {
+            disableButton.classList.add('disabledbtn'); // 添加禁用样式
+          }
+          disableButton.onclick = function() {
+            toggleDisableUser(user.userId, disableButton);
+          };
+          disableCell.appendChild(disableButton);
+          
+          let resetButton = document.createElement('button');
+          resetButton.textContent = 'reset';
+          resetButton.classList.add('resetbtn'); // 添加重置密码样式
+          resetButton.onclick = function() {
+            toggleresetUser(user.userId);
+          };
+          resetCell.appendChild(resetButton);
+
+          let deleteButton = document.createElement('button');
+          deleteButton.textContent = 'Delete';
+          deleteButton.classList.add('deletebtn'); // 添加删除用户样式
+          deleteButton.onclick = function() {
+            deleteUser(user.userId);
+          };
+          deleteCell.appendChild(deleteButton);
+        });
+      }
+    }
+    // 使用SHA-256加密
+    function sha256Encrypt(password) {
+      return CryptoJS.SHA256(password).toString();
+    }
+  </script>
+</html>

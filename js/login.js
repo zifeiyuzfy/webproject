@@ -81,6 +81,7 @@ function storeDefaultData() {
         unsubmittedlist: [],
         disable: false,
         isAllowRegister: false,
+        autograph: "",
       },
       {
         userId: "1",
@@ -91,6 +92,7 @@ function storeDefaultData() {
         unsubmittedlist: [],
         disable: false,
         isAllowRegister: false,
+        autograph: "",
       },
       {
         userId: "2",
@@ -101,6 +103,7 @@ function storeDefaultData() {
         unsubmittedlist: [],
         disable: false,
         isAllowRegister: false,
+        autograph: "",
       },
       {
         userId: "582789",
@@ -111,6 +114,7 @@ function storeDefaultData() {
         unsubmittedlist: [],
         disable: false,
         isAllowRegister: false,
+        autograph: "",
       },
       {
         userId: "485237",
@@ -121,6 +125,7 @@ function storeDefaultData() {
         unsubmittedlist: [],
         disable: false,
         isAllowRegister: false,
+        autograph: "",
       },
       {
         userId: "52242",
@@ -131,6 +136,7 @@ function storeDefaultData() {
         unsubmittedlist: [],
         disable: false,
         isAllowRegister: false,
+        autograph: "",
       },
       {
         userId: "810747",
@@ -141,6 +147,7 @@ function storeDefaultData() {
         unsubmittedlist: [],
         disable: false,
         isAllowRegister: false,
+        autograph: "",
       },
       {
         userId: "563679",
@@ -151,6 +158,7 @@ function storeDefaultData() {
         unsubmittedlist: [],
         disable: false,
         isAllowRegister: false,
+        autograph: "",
       },
       {
         userId: "679569",
@@ -161,6 +169,7 @@ function storeDefaultData() {
         unsubmittedlist: [],
         disable: false,
         isAllowRegister: false,
+        autograph: "",
       },
       {
         userId: "65750",
@@ -171,6 +180,7 @@ function storeDefaultData() {
         unsubmittedlist: [],
         disable: false,
         isAllowRegister: false,
+        autograph: "",
       }
     ];
 

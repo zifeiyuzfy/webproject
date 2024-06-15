@@ -105,21 +105,55 @@ function displayAnnouncements() {
 function updatePagination() {
   const pagination = document.getElementById("pagination");
   const totalPages = Math.ceil(allAnnouncements.length / announcementsPerPage);
+  let paginationHtml = "";
 
-  pagination.innerHTML = ""; // 清空现有分页按钮
-
-  for (let i = 1; i <= totalPages; i++) {
-    const pageButton = document.createElement("button");
-    pageButton.textContent = i;
-    if (i === currentPage) {
-      pageButton.classList.add("active");
-    }
-    pageButton.onclick = function () {
-      currentPage = parseInt(this.textContent); // 更新当前页码
-      displayAnnouncements(); // 重新显示公告
-    };
-    pagination.appendChild(pageButton);
+  // 添加“上一页”按钮
+  if (currentPage > 1) {
+    paginationHtml += `
+      <li class="material-icons page-btn page-btn-prev isClick">keyboard_arrow_left</li>
+    `;
   }
+
+  // 添加分页数字按钮
+  for (let i = 1; i <= totalPages; i++) {
+    const activeClass = i === currentPage ? "active" : "";
+    paginationHtml += `
+      <li class="page-number ${activeClass}">${i}</li>
+    `;
+  }
+
+  // 添加“下一页”按钮
+  if (currentPage < totalPages) {
+    paginationHtml += `
+      <li class="material-icons page-btn page-btn-next isClick">keyboard_arrow_right</li>
+    `;
+  }
+
+  // 将生成的分页HTML添加到分页容器中
+  pagination.innerHTML = paginationHtml;
+
+  // 为分页按钮添加点击事件
+  const pageBtns = document.querySelectorAll(".page-btn");
+  pageBtns.forEach((btn) => {
+    btn.addEventListener("click", function () {
+      const nextPage = this.classList.contains("page-btn-prev")
+        ? currentPage - 1
+        : currentPage + 1;
+      if (nextPage > 0 && nextPage <= totalPages) {
+        currentPage = nextPage;
+        displayAnnouncements();
+      }
+    });
+  });
+
+  // 为分页数字按钮添加点击事件
+  const pageNumbers = document.querySelectorAll(".page-number");
+  pageNumbers.forEach((number) => {
+    number.addEventListener("click", function () {
+      currentPage = parseInt(this.textContent);
+      displayAnnouncements();
+    });
+  });
 }
 
 // 当页面加载完成时触发

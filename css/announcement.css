@@ -10,7 +10,7 @@ body {
 
 /* 头部样式 */
 header {
-  background: #00ced1;
+  background: #5a738e;
   color: #fff;
   padding: 10px 20px;
   text-align: center;
@@ -28,7 +28,7 @@ header h1 {
   top: 35px;
   padding: 5px 10px;
   cursor: pointer;
-  background-color: #00ced1;
+  background-color: #5a738e;
   color: white;
   border: none;
   border-radius: 4px;

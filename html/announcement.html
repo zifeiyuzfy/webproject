@@ -3,11 +3,135 @@
   <head>
     <meta charset="UTF-8" />
     <title>课程通知</title>
-    <link rel="stylesheet" href="../css/announcement.css" />
+    <!-- <link rel="stylesheet" href="../css/announcement.css" /> -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 20px;
+      }
+      header {
+        background: #5a738e;
+        color: #fff;
+        padding: 10px 20px;
+        text-align: center;
+        border-bottom: 3px solid #ddd;
+      }
+      header h1 {
+        margin: 0;
+      }
+
+      #backButton {
+        position: absolute;
+        left: 20px;
+        top: 35px;
+        padding: 5px 10px;
+        cursor: pointer;
+        background-color: #5a738e;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+        font-size: 1.4rem; /* 设置字体大小以适应箭头大小 */
+      }
+
+      #backButton::before {
+        content: "\2190"; /* 箭头左指的Unicode字符 */
+        display: inline-block;
+        margin-right: 8px;
+        vertical-align: middle;
+      }
+
+      #backButton:hover {
+        background-color: #4993e2;
+      }
+
+      #announcementsContainer {
+        margin: 20px auto;
+        padding: 0;
+        max-width: 800px; /* 限制最大宽度 */
+        background: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+      }
+
+      .announcement {
+        margin-bottom: 1rem;
+        padding: 1.5rem;
+        border-bottom: 1px solid #eee;
+        background-color: #fff;
+        border-radius: 4px;
+      }
+
+      .announcement:first-of-type {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+      }
+
+      .announcement:last-of-type {
+        border-bottom: none;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+      }
+
+      /* 分页导航样式 */
+      #pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+
+      #pagination button {
+        margin: 0 5px;
+        padding: 8px 15px;
+        cursor: pointer;
+        border: 1px solid #007bff;
+        background-color: #fff;
+        color: #007bff;
+        border-radius: 4px;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      #pagination button:hover,
+      #pagination button:focus {
+        background-color: #007bff;
+        color: #fff;
+      }
+
+      #pagination button.active {
+        background-color: #007bff;
+        color: #fff;
+      }
+
+      /* 响应式设计 */
+      @media (max-width: 768px) {
+        #announcementsContainer {
+          margin: 10px;
+          padding: 10px;
+        }
+
+        .announcement {
+          padding: 1rem;
+        }
+
+        #pagination button {
+          padding: 6px 12px;
+        }
+      }
+    </style>
+    <!-- <script src="../js/announcement.js"></script> -->
+    <script src="../js/indexedDB.js"></script>
   </head>
   <body>
     <header>
@@ -18,7 +142,138 @@
     <section id="announcementsContainer"></section>
 
     <nav id="pagination" aria-label="Page navigation"></nav>
-
-    <script src="../js/announcement.js"></script>
   </body>
+  <script>
+    // 确保已定义db变量
+    let db;
+    const backButton = document.getElementById("backButton");
+    const announcementsContainer = document.getElementById(
+      "announcementsContainer"
+    );
+    const pagination = document.getElementById("pagination");
+    const announcementsPerPage = 10;
+    let currentPage = 1;
+    let allAnnouncements = []; // 存储从IndexedDB获取的所有公告
+
+    // 为返回按钮添加点击事件处理器
+    backButton.addEventListener("click", function () {
+      window.location.href = "../html/index.html"; // 点击后跳转到首页
+    });
+
+    // 从IndexedDB获取所有公告并存储
+    function fetchAnnouncements() {
+      cursorGetData(db, "announcement")
+        .then((announcements) => {
+          // 按日期对公告进行降序排序
+          allAnnouncements = announcements.sort(
+            (a, b) => new Date(b.date) - new Date(a.date)
+          );
+          displayAnnouncements(); // 获取公告后显示第一页的内容
+        })
+        .catch((error) => {
+          console.error("获取公告失败:", error);
+        });
+    }
+
+    // 显示公告并进行分页
+    function displayAnnouncements() {
+      // 清空现有内容
+      announcementsContainer.innerHTML = "";
+      // 计算当前页的起始和结束索引
+      const startIndex = (currentPage - 1) * announcementsPerPage;
+      const endIndex = Math.min(
+        startIndex + announcementsPerPage,
+        allAnnouncements.length
+      );
+
+      // 显示当前页的公告
+      for (let i = startIndex; i < endIndex; i++) {
+        const announcement = allAnnouncements[i];
+        const announcementEl = document.createElement("div");
+        announcementEl.className = "announcement";
+        announcementEl.innerHTML = `
+          <h3>${announcement.title}</h3>
+          <p>${announcement.content}</p>
+          <p>${announcement.date}</p>
+        `;
+        announcementsContainer.appendChild(announcementEl);
+      }
+
+      // 更新分页导航
+      updatePagination();
+    }
+
+    // 更新分页导航
+    function updatePagination() {
+      // 清空现有分页按钮
+      pagination.innerHTML = "";
+
+      const totalPages = Math.ceil(
+        allAnnouncements.length / announcementsPerPage
+      );
+      let paginationHtml = "";
+
+      // 添加“上一页”按钮
+      paginationHtml += `
+    <li class="material-icons page-btn page-btn-prev ${
+      currentPage === 1 ? "disabled" : "isClick"
+    }">
+      keyboard_arrow_left
+    </li>
+  `;
+
+      // 添加分页数字按钮
+      for (let i = 1; i <= totalPages; i++) {
+        const activeClass = i === currentPage ? "active" : "";
+        paginationHtml += `
+      <li class="page-number ${activeClass}">${i}</li>
+    `;
+      }
+
+      // 添加“下一页”按钮
+      paginationHtml += `
+    <li class="material-icons page-btn page-btn-next ${
+      currentPage === totalPages ? "disabled" : "isClick"
+    }">
+      keyboard_arrow_right
+    </li>
+  `;
+
+      // 设置分页导航的 HTML
+      pagination.innerHTML = paginationHtml;
+
+      // 为分页按钮添加事件监听器
+      const pageBtns = pagination.querySelectorAll(".page-btn");
+      pageBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          if (!btn.classList.contains("disabled")) {
+            const nextPage = btn.classList.contains("page-btn-prev")
+              ? currentPage - 1
+              : currentPage + 1;
+            goToPage(nextPage);
+          }
+        });
+      });
+
+      // 为分页数字按钮添加事件监听器
+      const pageNumbers = pagination.querySelectorAll(".page-number");
+      pageNumbers.forEach((number) => {
+        number.addEventListener("click", () => {
+          goToPage(parseInt(number.textContent));
+        });
+      });
+    }
+
+    // 当页面加载完成时触发
+    document.addEventListener("DOMContentLoaded", function () {
+      openDB("OJSystemDB", 1)
+        .then((dbInstance) => {
+          db = dbInstance;
+          fetchAnnouncements(); // 获取并显示公告
+        })
+        .catch((error) => {
+          console.error("数据库初始化失败:", error);
+        });
+    });
+  </script>
 </html>

@@ -198,7 +198,7 @@
             getDataByKey(db, "user", stuid.toString())
               .then(function (userData) {
                 console.log(userData.userId);
-                //用户不存在
+                //用户不存在getDataByKey
                 if (userData === false) {
                   swal("用户不存在", "", "error");
                 } else {

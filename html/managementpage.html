@@ -13,6 +13,7 @@
       type="text/javascript"
       src="http://css.huangwx.cn/js/sweetalert-dev.js"
     ></script>
+    <script src="http://172.31.73.236/assets/crypto-js.min.js"></script>
     <link rel="stylesheet" href="../css/usersmanagement.css">
     <script src="../js/indexedDB.js"></script>
 </head>
@@ -57,6 +58,7 @@ var users = [
     unsubmittedlist: [],
     disable: false,
     isAllowRegister: true,
+    autograph: "",
   },
   {
     userId: "1",
@@ -67,6 +69,7 @@ var users = [
     unsubmittedlist: [],
     disable: false,
     isAllowRegister: false,
+    autograph: "",
   },
   {
     userId: "2",
@@ -77,6 +80,7 @@ var users = [
     unsubmittedlist: [],
     disable: false,
     isAllowRegister: false,
+    autograph: "",
   },
 ];
 // 自由注册按钮
@@ -121,8 +125,20 @@ freeRegisterBtn.onclick = function() {
             unsubmittedlist: element.unsubmittedlist,
             disable: element.disable,
             isAllowRegister: !element.isAllowRegister,
+            autograph: element.autograph,
           }
           updateDB(db, 'user', updateData).then(function (updateResult) {
+            if (updateResult === true) {
+              // 实现自由注册逻辑
+              users.forEach(user => {
+                user.isAllowRegister = !user.isAllowRegister;
+              });
+              console.log(users);
+              freeRegisterBtn.textContent = users[0].isAllowRegister ? '关闭注册' : '开启注册';
+              swal("切换成功", "", "success");
+            } else {
+              swal("切换失败", "", "error");
+            }
           }).catch(function (error) {
             console.error(error);
           });
@@ -133,13 +149,6 @@ freeRegisterBtn.onclick = function() {
     //关闭数据库
     // closeDB(db);
   });
-  // 实现自由注册逻辑
-  users.forEach(user => {
-    user.isAllowRegister = !user.isAllowRegister;
-  });
-  console.log(users);
-  swal("切换成功", "", "success");
-  freeRegisterBtn.textContent = users[0].isAllowRegister ? '关闭注册' : '开启注册';
 };
 // 动态添加用户到表格
 function renderUsers() {
@@ -209,39 +218,104 @@ function updateTableRow(userId, user) {
 
 // 切换用户的禁用状态
 function toggleDisableUser(userId, disableButton) {
-  const user = users.find(u => u.userId === userId);
-  if (user) {
-    user.disable = !user.disable;
-  }
-  if(user.disable) {
-    disableButton.classList.remove('disabledbtn'); // 移除禁用样式
-    disableButton.classList.add('abledbtn'); // 添加可用样式
-  } else {
-    disableButton.classList.remove('abledbtn'); // 移除可用样式
-    disableButton.classList.add('disabledbtn'); // 添加禁用样式
-  }
-  updateTableRow(userId, user);
+  openDB("OJSystemDB", 1).then(function (db) {
+    db = db;
+    getDataByKey(db, "user", userId).then(function (element) {
+      //更新数据，只修改disable字段
+      let updateData = {
+        userId: element.userId,
+        password: element.password,
+        type: element.type,
+        name: element.name,
+        submittedlist: element.submittedlist,
+        unsubmittedlist: element.unsubmittedlist,
+        disable: !element.disable,
+        isAllowRegister: element.isAllowRegister,
+        autograph: element.autograph,
+      }
+      updateDB(db, 'user', updateData).then(function (updateResult) {
+        if (updateResult === true) {
+          const user = users.find(u => u.userId === userId);
+          if (user) {
+            user.disable = !user.disable;
+          }
+          if(user.disable) {
+            disableButton.classList.remove('disabledbtn'); // 移除禁用样式
+            disableButton.classList.add('abledbtn'); // 添加可用样式
+          } else {
+            disableButton.classList.remove('abledbtn'); // 移除可用样式
+            disableButton.classList.add('disabledbtn'); // 添加禁用样式
+          }
+          updateTableRow(userId, user);
+        } else {
+          swal("切换失败", "", "error");
+        }
+      }).catch(function (error) {
+        console.error(error);
+      });
+    }).catch(function (error) {
+        console.error(error);
+    });
+  });
 }
 
 // 重置用户的密码
 function toggleresetUser(userId) {
-  const user = users.find(u => u.userId === userId);
-  if (user) {
-    alert('密码已重置');
-  }
+  openDB("OJSystemDB", 1).then(function (db) {
+    db = db;
+    getDataByKey(db, "user", userId).then(function (element) {
+      //更新数据，只修改password字段
+      let updateData = {
+        userId: element.userId,
+        password: sha256Encrypt(userId),
+        type: element.type,
+        name: element.name,
+        submittedlist: element.submittedlist,
+        unsubmittedlist: element.unsubmittedlist,
+        disable: element.disable,
+        isAllowRegister: element.isAllowRegister,
+        autograph: element.autograph,
+      }
+      updateDB(db, 'user', updateData).then(function (updateResult) {
+        if (updateResult === true) {
+          swal("密码已重置", "", "success");
+        } else {
+          swal("重置密码失败", "", "error");
+        }
+      }).catch(function (error) {
+        console.error(error);
+      });
+    }).catch(function (error) {
+        console.error(error);
+    });
+  });
 }
 
 // 删除用户
 function deleteUser(userId) {
-  const index = users.findIndex(u => u.userId === userId);
-  if (index !== -1) {
-    users.splice(index, 1);
-    const row = document.querySelector(`tr[data-user-id="${userId}"]`);
-    if (row) {
-      row.remove(); // 直接从DOM中删除行
-    }
-  }
+  openDB("OJSystemDB", 1).then(function (db) {
+    db = db;
+    deleteDB(db, "user", userId).then(function (deleteResult) {
+      if(deleteResult === true) {
+        const index = users.findIndex(u => u.userId === userId);
+        if (index !== -1) {
+          users.splice(index, 1);
+          const row = document.querySelector(`tr[data-user-id="${userId}"]`);
+          if (row) {
+            row.remove(); // 直接从DOM中删除行
+            swal("删除成功", "", "success");
+          }
+        }
+      }
+      else {
+        swal("删除成功", "", "error");
+      }
+    }).catch(function (error) {
+        console.error(error);
+    });
+  });
 }
+
 var filteredUsers = users;
 // 搜索框输入元素
 var searchInput = document.querySelector('.search-box input');
@@ -326,6 +400,10 @@ function renderfilteredUsers() {
       deleteCell.appendChild(deleteButton);
     });
   }
+}
+// 使用SHA-256加密
+function sha256Encrypt(password) {
+  return CryptoJS.SHA256(password).toString();
 }
 </script>
 </html>

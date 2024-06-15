@@ -95,7 +95,8 @@ document.getElementById("toregister").addEventListener("click", function() {
                         submittedlist: [],
                         unsubmittedlist: [],
                         disable: false,
-                        isAllowRegister: false,
+                        isAllowRegister: true,
+                        autograph: "",
                     }
                     addData(db, "user", data).then(function (addResult) {
                         console.log(addResult);

@@ -307,10 +307,9 @@ function displayAnnouncements() {
         userData
       ) {
         if (userData.type === "teacher") {
-          // 添加“新增公告”按钮
           const newAnnouncementLink = document.createElement("a");
           newAnnouncementLink.href = "#";
-          newAnnouncementLink.textContent = "新增公告";
+          newAnnouncementLink.textContent = "新增通知";
           newAnnouncementLink.id = "new-announcement";
           newAnnouncementLink.style =
             "text-decoration: none; margin-left: 10px;"; // 添加样式
@@ -336,7 +335,7 @@ function showModalToAddAnnouncement() {
       <div class="modal-content">
         <span class="close">&times;</span>
         <div class="modal-header">
-          <h2>新增公告</h2>
+          <h2>新增通知</h2>
         </div>
         <input type="text" id="announcementTitle" placeholder="输入标题">
         <textarea id="announcementContent" placeholder="输入内容"></textarea>

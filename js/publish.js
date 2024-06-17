@@ -130,6 +130,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // 点击保存按钮后的操作
   saveBtn.addEventListener("click", function () {
+    modal.style.display = "none"; // 隐藏模态框
     getDataByKey(db, "user", userId).then(function (userData) {
       var nickname = document.getElementById("nickname").value;
       var password = document.getElementById("password").value;
@@ -137,8 +138,33 @@ document.addEventListener("DOMContentLoaded", function () {
       var pendingdeal = document.getElementById("todo").value;
       var fileInput = document.getElementById("avatar");
       var file = fileInput.files[0];
-      const reader = new FileReader();
-      reader.onload = function (e) {
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          // 构造更新后的用户数据对象
+          let updateData = {
+            userId: localStorage.getItem("userId"),
+            password: password, // 确保使用加密后的密码
+            type: userData.type,
+            name: nickname,
+            disable: userData.disable,
+            isAllowRegister: userData.isAllowRegister,
+            autograph: signature,
+            pendingdeal: pendingdeal,
+            avatar: e.target.result, // 使用新上传的头像或现有的头像
+          };
+          console.log("updateData =:" + updateData);
+          // 只有当密码发生变化时才更新密码
+          if (password != sha256Encrypt(localStorage.getItem("password"))) {
+            localStorage.setItem("password", password); // 更新本地存储的密码
+            updateData.password = sha256Encrypt(password);
+          }
+          updateDB(db, "user", updateData);
+          // 将创建的URL设置为img标签的src属性
+          document.getElementById("user-avatar").src = updateData.avatar;
+        };
+        reader.readAsDataURL(file);
+      } else {
         // 构造更新后的用户数据对象
         let updateData = {
           userId: localStorage.getItem("userId"),
@@ -149,7 +175,7 @@ document.addEventListener("DOMContentLoaded", function () {
           isAllowRegister: userData.isAllowRegister,
           autograph: signature,
           pendingdeal: pendingdeal,
-          avatar: e.target.result, // 使用新上传的头像或现有的头像
+          avatar: "",
         };
         // 只有当密码发生变化时才更新密码
         if (password != sha256Encrypt(localStorage.getItem("password"))) {
@@ -159,11 +185,10 @@ document.addEventListener("DOMContentLoaded", function () {
         updateDB(db, "user", updateData);
         // 将创建的URL设置为img标签的src属性
         document.getElementById("user-avatar").src = updateData.avatar;
-
-        modal.style.display = "none"; // 隐藏模态框
-      };
-      reader.readAsDataURL(file);
+      }
     });
+    swal("保存成功");
+    window.location.reload();
   });
 
   // 点击取消按钮或关闭按钮时隐藏模态窗口
@@ -706,22 +731,7 @@ function editData(problemId) {
 
       // 将数据填充到HTML元素中
       titleInput.value = problemData.title;
-      let parsedDeadline;
-      if (problemData.deadline) {
-        parsedDeadline = new Date(problemData.deadline).toISOString();
-        if (isNaN(parsedDeadline)) {
-          // 如果解析的日期无效，可以选择设置一个默认日期或显示错误
-          parsedDeadline = new Date().toISOString(); // 例如，设置为当前日期
-        } else {
-          deadlineInput.value = new Date(problemData.deadline)
-            .toISOString()
-            .split("T")[0]; // 将日期转换为YYYY-MM-DD格式
-        }
-      } else {
-        // 如果没有提供截止日期，同样可以设置默认值
-        parsedDeadline = new Date().toISOString();
-      }
-
+      deadlineInput.value = problemData.deadline;
       contentTextarea.value = problemData.content;
 
       // 获取图片URL数组
@@ -909,4 +919,20 @@ window.addEventListener("load", function () {
     document.querySelector(".field.size3").value = savedContent;
     // 可以在这里添加额外的逻辑，比如自动提交表单等
   }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  // 获取按钮和消息框元素
+  var quitButton = document.getElementById("quitButton");
+  var target = document.getElementById("target"); // 为按钮添加点击事件监听器
+  quitButton.addEventListener("click", function () {
+    document.getElementById("addForm").reset();
+    document.getElementById("img_here").innerHTML = "";
+    document.getElementById("video_here").innerHTML = ""; // 点击时滚动到target元素
+
+    target.scrollIntoView({
+      behavior: "smooth", // 平滑滚动
+      block: "start", // 滚动到元素的起始位置
+    });
+  });
 });

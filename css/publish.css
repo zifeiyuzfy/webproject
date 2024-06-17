@@ -10,8 +10,6 @@ body {
   overflow-x: hidden; /* 禁止水平滚动 */
   min-height: 100vh; /* 确保body至少占据整个视口高度 */
   font-family: Verdana, sans-serif;
-  font-size: 11px;
-  line-height: 14px;
   color: #5e5e5e;
 }
 input,
@@ -229,6 +227,7 @@ h3 a {
 }
 
 .table {
+  font-size: 11px;
 }
 .table th {
   background: #fffdfa url(../static/images/th.gif) repeat-x 0 0;

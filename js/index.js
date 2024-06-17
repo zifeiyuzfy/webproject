@@ -1,9 +1,10 @@
+let db;
 var modal = document.getElementById("myModal");
 // 将数据库操作移到单独的函数中
 function initializeUserOptions() {
   openDB("OJSystemDB", 1)
     .then(function (db1) {
-      window.db = db1;
+      db = db1;
       displayAnnouncements();
       // 加载并显示问题列表
       cursorGetData(db, "problem").then((problems) => {
@@ -148,8 +149,33 @@ document.addEventListener("DOMContentLoaded", function () {
       var pendingdeal = document.getElementById("todo").value;
       var fileInput = document.getElementById("avatar");
       var file = fileInput.files[0];
-      const reader = new FileReader();
-      reader.onload = function (e) {
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          // 构造更新后的用户数据对象
+          let updateData = {
+            userId: localStorage.getItem("userId"),
+            password: password, // 确保使用加密后的密码
+            type: userData.type,
+            name: nickname,
+            disable: userData.disable,
+            isAllowRegister: userData.isAllowRegister,
+            autograph: signature,
+            pendingdeal: pendingdeal,
+            avatar: e.target.result, // 使用新上传的头像或现有的头像
+          };
+          console.log("updateData =:" + updateData);
+          // 只有当密码发生变化时才更新密码
+          if (password != sha256Encrypt(localStorage.getItem("password"))) {
+            localStorage.setItem("password", password); // 更新本地存储的密码
+            updateData.password = sha256Encrypt(password);
+          }
+          updateDB(db, "user", updateData);
+          // 将创建的URL设置为img标签的src属性
+          document.getElementById("user-avatar").src = updateData.avatar;
+        };
+        reader.readAsDataURL(file);
+      } else {
         // 构造更新后的用户数据对象
         let updateData = {
           userId: localStorage.getItem("userId"),
@@ -160,7 +186,7 @@ document.addEventListener("DOMContentLoaded", function () {
           isAllowRegister: userData.isAllowRegister,
           autograph: signature,
           pendingdeal: pendingdeal,
-          avatar: e.target.result, // 使用新上传的头像或现有的头像
+          avatar: "",
         };
         // 只有当密码发生变化时才更新密码
         if (password != sha256Encrypt(localStorage.getItem("password"))) {
@@ -170,9 +196,10 @@ document.addEventListener("DOMContentLoaded", function () {
         updateDB(db, "user", updateData);
         // 将创建的URL设置为img标签的src属性
         document.getElementById("user-avatar").src = updateData.avatar;
-      };
-      if (file) reader.readAsDataURL(file);
+      }
     });
+    swal("保存成功");
+    window.location.reload();
   });
 
   // 点击取消按钮或关闭按钮时隐藏模态窗口
@@ -350,7 +377,11 @@ function showModalToAddAnnouncement() {
     let announcementData = {
       title: title,
       content: content,
-      date: new Date().toISOString().split("T")[0], // 获取当前日期并格式化为 "YYYY-MM-DD"
+      // date: new Date().toISOString().split("T")[0], // 获取当前日期并格式化为 "YYYY-MM-DD"
+      date:
+        new Date().toLocaleDateString("en-CA") +
+        " " +
+        new Date().toLocaleTimeString("en-CA", { hour12: false }),
       isvisited: "0",
     };
     addData(db, "announcement", announcementData);
@@ -361,6 +392,7 @@ function showModalToAddAnnouncement() {
     // 清除输入框内容
     document.getElementById("announcementTitle").value = "";
     document.getElementById("announcementContent").value = "";
+    window.location.reload();
   };
 }
 

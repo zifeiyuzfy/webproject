@@ -41,7 +41,7 @@
               type="text"
               id="stuid"
               class="form-control"
-              placeholder="学号"
+              placeholder="账号"
             />
             <!-- 提示信息 -->
             <span class="result" id="stuid-error"></span>
@@ -151,14 +151,14 @@
         var userId = "0";
         window.location.href = "../html/index.html?userId=" + userId;
       });
-    // 实时验证学号
+    // 实时验证账号
     function validateStuid(input) {
       let stuid = input.value;
       let stuidError = document.getElementById("stuid-error");
       if (!stuid) {
-        stuidError.textContent = "学号不能为空";
+        stuidError.textContent = "账号不能为空";
       } else if (!/^\d+$/.test(stuid)) {
-        stuidError.textContent = "学号仅能包含数字";
+        stuidError.textContent = "账号仅能包含数字";
       } else {
         stuidError.textContent = "";
       }
@@ -180,7 +180,7 @@
       const stuid = document.getElementById("stuid").value;
       const password = document.getElementById("password").value;
       if (!stuid || !/^\d+$/.test(stuid) || !password) {
-        swal("请输入有效的学号或密码", "", "error");
+        swal("请输入有效的账号或密码", "", "error");
         return;
       } else {
         // 调用加密函数

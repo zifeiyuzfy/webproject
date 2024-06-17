@@ -41,7 +41,7 @@
               type="text"
               id="stuid"
               class="form-control"
-              placeholder="学号"
+              placeholder="账号"
             />
             <!-- 提示信息 -->
             <span class="result" id="stuid-error"></span>
@@ -69,14 +69,14 @@
         var userId = "0";
         window.location.href = "../html/index.html?userId=" + userId;
       });
-    // 实时验证学号
+    // 实时验证账号
     function validateStuid(input) {
       let stuid = input.value;
       let stuidError = document.getElementById("stuid-error");
       if (!stuid) {
-        stuidError.textContent = "学号不能为空";
+        stuidError.textContent = "账号不能为空";
       } else if (!/^\d+$/.test(stuid)) {
-        stuidError.textContent = "学号仅能包含数字";
+        stuidError.textContent = "账号仅能包含数字";
       } else {
         stuidError.textContent = "";
       }
@@ -95,9 +95,9 @@
         event.preventDefault(); // 阻止表单默认提交行为
         const stuid = document.getElementById("stuid").value;
         if (!stuid || !/^\d+$/.test(stuid)) {
-          swal("请输入有效的学号", "", "error");
+          swal("请输入有效的账号", "", "error");
         } else {
-          // 调用加密函数,默认密码为学号
+          // 调用加密函数,默认密码为账号
           const encryptedPassword = sha256Encrypt(stuid);
           //检索数据库是否有该用户
           openDB("OJSystemDB", 1)
@@ -123,7 +123,7 @@
                           swal(
                             {
                               title: "注册成功！",
-                              text: "初始密码为学号，请及时修改密码",
+                              text: "初始密码为账号，请及时修改密码",
                               type: "success",
                               showCancelButton: false,
                               // showconfirmButton: true,
@@ -155,13 +155,13 @@
                         console.error(error);
                       });
                   } else {
-                    swal("该学号已被注册", "", "error");
+                    swal("该账号已被注册", "", "error");
                   }
                 })
                 .catch(function (error) {
                   console.error(error);
                 });
-              // swal("学号：" + stuid + "\n加密后的密码是：" + encryptedPassword);
+              // swal("账号：" + stuid + "\n加密后的密码是：" + encryptedPassword);
               // closeDB(db);
             })
             .catch(function (error) {

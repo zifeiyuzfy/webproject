@@ -1,0 +1,133 @@
+/* 重置浏览器默认样式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #ececec;
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+  background-image: url("../static/background.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  /* 这将确保内容在垂直方向上从顶部开始 */
+  min-height: 100vh;
+  /* 确保至少占据整个视口高度 */
+}
+
+h1 {
+  margin-bottom: 20px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* 容器样式 */
+#displayArea {
+  background: #fff;
+  padding: 30px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  width: 100%;
+  text-align: left;
+}
+
+/* 文本区域样式 */
+textarea {
+  width: 100%;
+  min-height: 150px;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+/* 文件输入样式 */
+input[type="file"] {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  text-align: center;
+  cursor: pointer;
+  transition: border 0.3s ease;
+}
+
+input[type="file"]:hover {
+  border-color: #888;
+}
+
+/* 按钮容器样式 */
+#buttonContainer {
+  margin-top: 30px;
+  display: flex;
+  gap: 8px;
+  /* 按钮之间的间隔 */
+  justify-content: center;
+  /* 水平居中按钮 */
+}
+
+#buttonContainer button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 5px;
+  background-color: #3498db;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  outline: none;
+  font-weight: 500;
+}
+
+#buttonContainer button:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 图片和视频样式 */
+img,
+video {
+  max-width: 100%;
+  height: auto;
+  margin-top: 10px;
+  border-radius: 5px;
+  transition: transform 0.3s ease;
+}
+
+img:hover,
+video:hover {
+  transform: scale(1.05);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  #displayArea {
+    padding: 20px;
+    max-width: 100%;
+  }
+
+  #buttonContainer button {
+    padding: 10px 20px;
+  }
+}

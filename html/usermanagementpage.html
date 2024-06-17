@@ -17,7 +17,7 @@
       src="http://css.huangwx.cn/js/sweetalert-dev.js"
     ></script>
     <script src="http://172.31.73.236/assets/crypto-js.min.js"></script>
-    <link rel="stylesheet" href="../css/usersmanagement.css">
+    <link rel="stylesheet" href="../css/usersmanagement.css" />
     <script src="../js/indexedDB.js"></script>
     <script src="../js/userDetail.js"></script>
     <style>
@@ -155,7 +155,7 @@
 
       .user-avatar {
         width: 45px;
-        height: 45px;
+        height: 43px;
         border-radius: 20px;
         transition: transform 0.3s ease;
       }
@@ -326,7 +326,7 @@
         padding: 20px; /* 添加内边距 */
         margin-top: 43px;
         overflow: auto; /* 如果内容溢出，允许滚动 */
-        margin-left: 200px;
+        margin-left: 100px;
       }
 
       footer {
@@ -362,23 +362,23 @@
           </a>
         </li>
         <li>
-          <a href="javascript:void(0)">
+          <a href="../html/submit.html">
             <i class="fa fa-location-arrow"></i>
             <span>提交问题</span>
           </a>
         </li>
         <li>
-          <a href="javascript:void(0)">
+          <a href="../html/publish.html">
             <i class="fa fa-edit"></i>
             <span>发布问题</span>
           </a>
         </li>
         <li class="active">
-          <a href="javascript:void(0)">
+          <a href="../html/usermanagementpage.html">
             <i class="fa fa-user"></i>
             <span>用户管理</span>
           </a>
-        </li>        
+        </li>
       </ul>
       <div class="toolkit">
         <a href="#"> </a>
@@ -400,8 +400,28 @@
       <div class="container">
         <div class="functionbar">
           <div class="search-box">
-            <svg t="1718388443425" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4394" width="20" height="20"><path d="M487.936 165.376c149.504 0 271.36 121.856 271.36 271.36s-121.856 271.36-271.36 271.36-271.36-121.856-271.36-271.36 121.856-271.36 271.36-271.36m0-61.44c-183.808 0-332.8 148.992-332.8 332.8s148.992 332.8 332.8 332.8 332.8-148.992 332.8-332.8-148.992-332.8-332.8-332.8z" fill="#62A86F" p-id="4395"></path><path d="M897.024 828.416l-30.208 30.208c-11.776 11.776-31.744 11.776-43.52 0l-163.84-163.84c-11.776-11.776-11.776-31.744 0-43.52l30.208-30.208c11.776-11.776 31.744-11.776 43.52 0l163.84 163.84c11.776 11.776 11.776 31.232 0 43.52z" fill="#62A86F" p-id="4396"></path></svg>
-            <input type="text" placeholder="输入用户id">
+            <svg
+              t="1718388443425"
+              class="icon"
+              viewBox="0 0 1024 1024"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              p-id="4394"
+              width="20"
+              height="20"
+            >
+              <path
+                d="M487.936 165.376c149.504 0 271.36 121.856 271.36 271.36s-121.856 271.36-271.36 271.36-271.36-121.856-271.36-271.36 121.856-271.36 271.36-271.36m0-61.44c-183.808 0-332.8 148.992-332.8 332.8s148.992 332.8 332.8 332.8 332.8-148.992 332.8-332.8-148.992-332.8-332.8-332.8z"
+                fill="#62A86F"
+                p-id="4395"
+              ></path>
+              <path
+                d="M897.024 828.416l-30.208 30.208c-11.776 11.776-31.744 11.776-43.52 0l-163.84-163.84c-11.776-11.776-11.776-31.744 0-43.52l30.208-30.208c11.776-11.776 31.744-11.776 43.52 0l163.84 163.84c11.776 11.776 11.776 31.232 0 43.52z"
+                fill="#62A86F"
+                p-id="4396"
+              ></path>
+            </svg>
+            <input type="text" placeholder="输入用户id" />
           </div>
           <div class="free-box">
             <button id="freeRegister">开启或关闭</button>
@@ -410,16 +430,15 @@
         <!-- 用户列表 -->
         <table>
           <tr>
-              <th>用户Id</th>
-              <th>姓名</th>
-              <th>角色</th>
-              <th>禁用操作</th>
-              <th>重置密码</th>
-              <th>删除操作</th>
+            <th>用户Id</th>
+            <th>姓名</th>
+            <th>角色</th>
+            <th>禁用操作</th>
+            <th>重置密码</th>
+            <th>删除操作</th>
           </tr>
           <tbody id="userTable">
             <!-- User rows -->
-
           </tbody>
         </table>
       </div>
@@ -462,18 +481,12 @@
     </footer>
   </body>
   <script>
-    var currentUserID;//当前用户ID
     var modal = document.getElementById("myModal");
     // 将数据库操作移到单独的函数中
     function initializeUserOptions() {
       openDB("OJSystemDB", 1)
         .then(function (db) {
-          // 解析当前页面的URL
-          const queryParams = new URLSearchParams(window.location.search);
-          // 从查询字符串中获取userId
-          const userId = queryParams.get("userId");
-          console.log("获得的userId为:", userId);
-          currentUserID = userId;
+          const userId = localStorage.getItem("userId");
           return getDataByKey(db, "user", userId.toString()); // 使用return以等待promise
         })
         .then(function (userData) {
@@ -492,7 +505,7 @@
           if (userActionPersonal) {
             userActionPersonal.addEventListener("click", function (event) {
               event.preventDefault();
-              initializeUserDetail(currentUserID);
+              initializeUserDetail();
               modal.style.display = "block";
             });
           }
@@ -505,31 +518,129 @@
     // 调用函数以根据用户权限初始化首页
     initializeUserOptions();
 
+    // 根据用户类型显示或隐藏导航栏项目
+    function updateUserTypeNav(type) {
+      const navItems = document.querySelectorAll(
+        ".navbar ul li:not(:first-child)"
+      ); // 获取所有导航项，除了第一个
+
+      // 根据用户类型隐藏或显示导航项
+      navItems.forEach((navItem) => {
+        const link = navItem.querySelector("a");
+        if (link) {
+          const href = link.getAttribute("href");
+          // 根据 href 来判断应该显示还是隐藏
+          switch (type) {
+            case "teacher":
+              // 教师显示所有链接
+              navItem.style.display = "block";
+              break;
+            case "student":
+              // 学生隐藏发布问题和用户管理
+              if (
+                href.includes("publish.html") ||
+                href.includes("usermanagementpage.html")
+              ) {
+                navItem.style.display = "none";
+              }
+              break;
+            case "guest":
+              // 访客只显示首页
+              if (!href.includes("index.html")) {
+                navItem.style.display = "none";
+              }
+              break;
+            default:
+              // 默认隐藏所有链接
+              navItem.style.display = "none";
+          }
+        }
+      });
+    }
+
+    // 头像文件输入逻辑，用于更新预览
+    document
+      .getElementById("avatar")
+      .addEventListener("change", function (event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            // 更新头像预览
+            const userAvatarImage = document.getElementById("user-avatar");
+            userAvatarImage.src = e.target.result;
+            document.getElementById("profile-avatar-preview").src =
+              e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
     // 处理文件选择和预览
     document.addEventListener("DOMContentLoaded", function () {
       var saveBtn = document.getElementById("saveProfile");
       var cancelBtn = document.getElementById("cancelProfile");
-      document
-        .getElementById("avatar")
-        .addEventListener("change", function (event) {
-          var file = event.target.files[0];
-          var reader = new FileReader();
-          reader.onload = function (e) {
-            var previewImage = document.getElementById(
-              "profile-avatar-preview"
-            );
-            previewImage.src = e.target.result;
-          };
-          reader.readAsDataURL(file);
-        });
+      const userId = localStorage.getItem("userId");
+
+      //获取用户信息并设置头像
+      openDB("OJSystemDB", 1).then(function (db) {
+        getDataByKey(db, "user", userId)
+          .then(function (userData) {
+            if (userData && userData.avatar) {
+              // 如果用户信息中有 avatar 字段，显示头像
+              const userAvatarImage = document.getElementById("user-avatar");
+              const profileAvatarPreview = document.getElementById(
+                "profile-avatar-preview"
+              );
+              userAvatarImage.src = `${userData.avatar}`;
+              profileAvatarPreview.src = `${userData.avatar}`;
+            } else {
+              // 如果没有 avatar 字段，设置为默认头像
+              const userAvatarImage = document.getElementById("user-avatar");
+              userAvatarImage.src = "../static/user.jpg";
+            }
+          })
+          .catch(function (error) {
+            console.error("Error fetching user data:", error);
+            // 处理错误，例如设置默认头像等
+          });
+      });
 
       // 点击保存按钮后的操作
       saveBtn.addEventListener("click", function () {
-        // 这里添加保存个人信息的逻辑
-        // 例如：获取表单数据，发送到服务器等
-        console.log("保存个人信息的逻辑");
-        // 隐藏模态窗口
-        modal.style.display = "none";
+        getDataByKey(db, "user", userId).then(function (userData) {
+          var nickname = document.getElementById("nickname").value;
+          var password = document.getElementById("password").value;
+          var signature = document.getElementById("signature").value;
+          var pendingdeal = document.getElementById("todo").value;
+          var fileInput = document.getElementById("avatar");
+          var file = fileInput.files[0];
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            // 构造更新后的用户数据对象
+            let updateData = {
+              userId: localStorage.getItem("userId"),
+              password: password, // 确保使用加密后的密码
+              type: userData.type,
+              name: nickname,
+              disable: userData.disable,
+              isAllowRegister: userData.isAllowRegister,
+              autograph: signature,
+              pendingdeal: pendingdeal,
+              avatar: e.target.result, // 使用新上传的头像或现有的头像
+            };
+            // 只有当密码发生变化时才更新密码
+            if (password != sha256Encrypt(localStorage.getItem("password"))) {
+              localStorage.setItem("password", password); // 更新本地存储的密码
+              updateData.password = sha256Encrypt(password);
+            }
+            updateDB(db, "user", updateData);
+            // 将创建的URL设置为img标签的src属性
+            document.getElementById("user-avatar").src = updateData.avatar;
+
+            modal.style.display = "none"; // 隐藏模态框
+          };
+          reader.readAsDataURL(file);
+        });
       });
 
       // 点击取消按钮或关闭按钮时隐藏模态窗口
@@ -556,8 +667,23 @@
         var mainContainer = document.querySelector(".main-container");
         mainContainer.scrollTop = 0; // 滚动到顶部
       });
-    });
 
+      // 获取复选框和主容器元素
+      const checkbox = document.getElementById("checkbox");
+      const mainContainer = document.querySelector(".main-container");
+
+      // 为复选框添加点击事件监听器
+      checkbox.addEventListener("change", function () {
+        // 根据复选框的选中状态来设置 margin-left
+        if (this.checked) {
+          // 如果复选框被选中，设置较小的 margin-left
+          mainContainer.style.marginLeft = "200px";
+        } else {
+          // 如果复选框未被选中，设置较大的 margin-left
+          mainContainer.style.marginLeft = "100px";
+        }
+      });
+    });
 
     // 初始用户列表
     var users = [
@@ -566,49 +692,58 @@
         password: "0",
         type: "guest",
         name: "Guest",
-        submittedlist: [],
-        unsubmittedlist: [],
         disable: false,
         isAllowRegister: true,
         autograph: "",
+        pendingdeal: "",
       },
       {
         userId: "1",
         password: "1",
         type: "teacher",
         name: "Teacher",
-        submittedlist: [],
-        unsubmittedlist: [],
         disable: false,
         isAllowRegister: false,
         autograph: "",
+        pendingdeal: "",
       },
       {
         userId: "2",
         password: "2",
         type: "student",
         name: "Student", // 修正了名字错误
-        submittedlist: [],
-        unsubmittedlist: [],
         disable: false,
         isAllowRegister: false,
         autograph: "",
+        pendingdeal: "",
       },
     ];
     // 自由注册按钮
-    var freeRegisterBtn = document.getElementById('freeRegister');
-    //从数据库获取学生列表
+    var freeRegisterBtn = document.getElementById("freeRegister");
+    //从数据库获取用户列表
     openDB("OJSystemDB", 1).then(function (db) {
       db = db;
       //查找teacher的数据
+      cursorGetDataByIndex(db, "user", "type", "teacher")
+        .then(function (teachersData) {
+          if (teachersData !== false) {
+            users = teachersData;
+          }
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+      //查找student的数据
       cursorGetDataByIndex(db, "user", "type", "student")
         .then(function (studentsData) {
-          console.log("cursorGetDataByIndex-studentsData=" + studentsData);
           if (studentsData !== false) {
-            users = studentsData;
-            console.log(users);
-            freeRegisterBtn.textContent = users[0].isAllowRegister ? '关闭注册' : '开启注册';
-            freeRegisterBtn.classList.add('freeRegisterbtn'); // 添加重置密码样式
+            studentsData.forEach((student) => {
+              users.push(student);
+            });
+            freeRegisterBtn.textContent = users[0].isAllowRegister
+              ? "关闭注册"
+              : "开启注册";
+            freeRegisterBtn.classList.add("freeRegisterbtn"); // 添加重置密码样式
             // 初始化渲染用户列表
             renderUsers();
           }
@@ -620,54 +755,57 @@
       closeDB(db);
     });
     // 自由注册点击事件
-    freeRegisterBtn.onclick = function() {
+    freeRegisterBtn.onclick = function () {
       openDB("OJSystemDB", 1).then(function (db) {
         db = db;
         //修改数据库所有的数据的isAllowRegister
-        cursorGetData(db, 'user').then(function (allData) {
-          console.log("allData="+allData);
-          allData.forEach(element => {
+        cursorGetData(db, "user")
+          .then(function (allData) {
+            allData.forEach((element) => {
               //更新数据，只修改isAllowRegister字段
               let updateData = {
                 userId: element.userId,
                 password: element.password,
                 type: element.type,
                 name: element.name,
-                submittedlist: element.submittedlist,
-                unsubmittedlist: element.unsubmittedlist,
                 disable: element.disable,
                 isAllowRegister: !element.isAllowRegister,
                 autograph: element.autograph,
-              }
-              updateDB(db, 'user', updateData).then(function (updateResult) {
-                if (updateResult === true) {
-                  // 实现自由注册逻辑
-                  users.forEach(user => {
-                    user.isAllowRegister = !user.isAllowRegister;
-                  });
-                  console.log(users);
-                  freeRegisterBtn.textContent = users[0].isAllowRegister ? '关闭注册' : '开启注册';
-                  swal("切换成功", "", "success");
-                } else {
-                  swal("切换失败", "", "error");
-                }
-              }).catch(function (error) {
-                console.error(error);
-              });
-          });
-        }).catch(function (error) {
+                pendingdeal: element.pendingdeal,
+              };
+              updateDB(db, "user", updateData)
+                .then(function (updateResult) {
+                  if (updateResult === true) {
+                    // 实现自由注册逻辑
+                    users.forEach((user) => {
+                      user.isAllowRegister = !user.isAllowRegister;
+                    });
+                    freeRegisterBtn.textContent = users[0].isAllowRegister
+                      ? "关闭注册"
+                      : "开启注册";
+                    swal("切换成功", "", "success");
+                  } else {
+                    swal("切换失败", "", "error");
+                  }
+                })
+                .catch(function (error) {
+                  console.error(error);
+                });
+            });
+          })
+          .catch(function (error) {
             console.error(error);
-        });
+          });
         //关闭数据库
         // closeDB(db);
       });
     };
     // 动态添加用户到表格
     function renderUsers() {
-      const table = document.getElementById('userTable');
-      users.forEach(user => {
+      const table = document.getElementById("userTable");
+      users.forEach((user) => {
         const row = table.insertRow();
-        row.setAttribute('data-user-id', user.userId); // 添加data属性
+        row.setAttribute("data-user-id", user.userId); // 添加data属性
         const userIdCell = row.insertCell(0);
         const nameCell = row.insertCell(1);
         const typeCell = row.insertCell(2);
@@ -679,30 +817,30 @@
         nameCell.textContent = user.name;
         typeCell.textContent = user.type;
 
-        let disableButton = document.createElement('button');
-        disableButton.textContent = user.disable ? 'Enable' : 'Disable';
-        if(user.disable) {
-          disableButton.classList.add('abledbtn'); // 添加可用样式
+        let disableButton = document.createElement("button");
+        disableButton.textContent = user.disable ? "Enable" : "Disable";
+        if (user.disable) {
+          disableButton.classList.add("abledbtn"); // 添加可用样式
         } else {
-          disableButton.classList.add('disabledbtn'); // 添加禁用样式
+          disableButton.classList.add("disabledbtn"); // 添加禁用样式
         }
-        disableButton.onclick = function() {
+        disableButton.onclick = function () {
           toggleDisableUser(user.userId, disableButton);
         };
         disableCell.appendChild(disableButton);
-        
-        let resetButton = document.createElement('button');
-        resetButton.textContent = 'reset';
-        resetButton.classList.add('resetbtn'); // 添加重置密码样式
-        resetButton.onclick = function() {
+
+        let resetButton = document.createElement("button");
+        resetButton.textContent = "reset";
+        resetButton.classList.add("resetbtn"); // 添加重置密码样式
+        resetButton.onclick = function () {
           toggleresetUser(user.userId);
         };
         resetCell.appendChild(resetButton);
 
-        let deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Delete';
-        deleteButton.classList.add('deletebtn'); // 添加删除用户样式
-        deleteButton.onclick = function() {
+        let deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.classList.add("deletebtn"); // 添加删除用户样式
+        deleteButton.onclick = function () {
           deleteUser(user.userId);
         };
         deleteCell.appendChild(deleteButton);
@@ -710,20 +848,22 @@
     }
     // 更新表格中的特定用户行
     function updateTableRow(userId, user) {
-      const table = document.getElementById('userTable');
+      const table = document.getElementById("userTable");
       const row = table.querySelector(`tr[data-user-id="${userId}"]`);
       if (row) {
         row.cells[0].textContent = user.userId; // User ID
         row.cells[1].textContent = user.name; // Name
         row.cells[2].textContent = user.type; // Type
-        row.cells[3].firstChild.textContent = user.disable ? 'Enable' : 'Disable'; // Disable/Enable button
-        row.cells[4].firstChild.textContent = 'reset'; // Reset button
-        row.cells[5].firstChild.textContent = 'Delete'; // Delete button
+        row.cells[3].firstChild.textContent = user.disable
+          ? "Enable"
+          : "Disable"; // Disable/Enable button
+        row.cells[4].firstChild.textContent = "reset"; // Reset button
+        row.cells[5].firstChild.textContent = "Delete"; // Delete button
         // 根据禁用状态添加或移除.disabled类
         if (user.disable) {
-          row.classList.add('disabled');
+          row.classList.add("disabled");
         } else {
-          row.classList.remove('disabled');
+          row.classList.remove("disabled");
         }
       }
     }
@@ -732,42 +872,45 @@
     function toggleDisableUser(userId, disableButton) {
       openDB("OJSystemDB", 1).then(function (db) {
         db = db;
-        getDataByKey(db, "user", userId).then(function (element) {
-          //更新数据，只修改disable字段
-          let updateData = {
-            userId: element.userId,
-            password: element.password,
-            type: element.type,
-            name: element.name,
-            submittedlist: element.submittedlist,
-            unsubmittedlist: element.unsubmittedlist,
-            disable: !element.disable,
-            isAllowRegister: element.isAllowRegister,
-            autograph: element.autograph,
-          }
-          updateDB(db, 'user', updateData).then(function (updateResult) {
-            if (updateResult === true) {
-              const user = users.find(u => u.userId === userId);
-              if (user) {
-                user.disable = !user.disable;
-              }
-              if(user.disable) {
-                disableButton.classList.remove('disabledbtn'); // 移除禁用样式
-                disableButton.classList.add('abledbtn'); // 添加可用样式
-              } else {
-                disableButton.classList.remove('abledbtn'); // 移除可用样式
-                disableButton.classList.add('disabledbtn'); // 添加禁用样式
-              }
-              updateTableRow(userId, user);
-            } else {
-              swal("切换失败", "", "error");
-            }
-          }).catch(function (error) {
+        getDataByKey(db, "user", userId)
+          .then(function (element) {
+            //更新数据，只修改disable字段
+            let updateData = {
+              userId: element.userId,
+              password: element.password,
+              type: element.type,
+              name: element.name,
+              disable: !element.disable,
+              isAllowRegister: element.isAllowRegister,
+              autograph: element.autograph,
+              pendingdeal: element.pendingdeal,
+            };
+            updateDB(db, "user", updateData)
+              .then(function (updateResult) {
+                if (updateResult === true) {
+                  const user = users.find((u) => u.userId === userId);
+                  if (user) {
+                    user.disable = !user.disable;
+                  }
+                  if (user.disable) {
+                    disableButton.classList.remove("disabledbtn"); // 移除禁用样式
+                    disableButton.classList.add("abledbtn"); // 添加可用样式
+                  } else {
+                    disableButton.classList.remove("abledbtn"); // 移除可用样式
+                    disableButton.classList.add("disabledbtn"); // 添加禁用样式
+                  }
+                  updateTableRow(userId, user);
+                } else {
+                  swal("切换失败", "", "error");
+                }
+              })
+              .catch(function (error) {
+                console.error(error);
+              });
+          })
+          .catch(function (error) {
             console.error(error);
           });
-        }).catch(function (error) {
-            console.error(error);
-        });
       });
     }
 
@@ -775,31 +918,34 @@
     function toggleresetUser(userId) {
       openDB("OJSystemDB", 1).then(function (db) {
         db = db;
-        getDataByKey(db, "user", userId).then(function (element) {
-          //更新数据，只修改password字段
-          let updateData = {
-            userId: element.userId,
-            password: sha256Encrypt(userId),
-            type: element.type,
-            name: element.name,
-            submittedlist: element.submittedlist,
-            unsubmittedlist: element.unsubmittedlist,
-            disable: element.disable,
-            isAllowRegister: element.isAllowRegister,
-            autograph: element.autograph,
-          }
-          updateDB(db, 'user', updateData).then(function (updateResult) {
-            if (updateResult === true) {
-              swal("密码已重置", "", "success");
-            } else {
-              swal("重置密码失败", "", "error");
-            }
-          }).catch(function (error) {
+        getDataByKey(db, "user", userId)
+          .then(function (element) {
+            //更新数据，只修改password字段
+            let updateData = {
+              userId: element.userId,
+              password: sha256Encrypt(userId),
+              type: element.type,
+              name: element.name,
+              disable: element.disable,
+              isAllowRegister: element.isAllowRegister,
+              autograph: element.autograph,
+              pendingdeal: element.pendingdeal,
+            };
+            updateDB(db, "user", updateData)
+              .then(function (updateResult) {
+                if (updateResult === true) {
+                  swal("密码已重置", "", "success");
+                } else {
+                  swal("重置密码失败", "", "error");
+                }
+              })
+              .catch(function (error) {
+                console.error(error);
+              });
+          })
+          .catch(function (error) {
             console.error(error);
           });
-        }).catch(function (error) {
-            console.error(error);
-        });
       });
     }
 
@@ -807,71 +953,75 @@
     function deleteUser(userId) {
       openDB("OJSystemDB", 1).then(function (db) {
         db = db;
-        deleteDB(db, "user", userId).then(function (deleteResult) {
-          if(deleteResult === true) {
-            const index = users.findIndex(u => u.userId === userId);
-            if (index !== -1) {
-              users.splice(index, 1);
-              const row = document.querySelector(`tr[data-user-id="${userId}"]`);
-              if (row) {
-                row.remove(); // 直接从DOM中删除行
-                swal("删除成功", "", "success");
+        deleteDB(db, "user", userId)
+          .then(function (deleteResult) {
+            if (deleteResult === true) {
+              const index = users.findIndex((u) => u.userId === userId);
+              if (index !== -1) {
+                users.splice(index, 1);
+                const row = document.querySelector(
+                  `tr[data-user-id="${userId}"]`
+                );
+                if (row) {
+                  row.remove(); // 直接从DOM中删除行
+                  swal("删除成功", "", "success");
+                }
               }
+            } else {
+              swal("删除成功", "", "error");
             }
-          }
-          else {
-            swal("删除成功", "", "error");
-          }
-        }).catch(function (error) {
+          })
+          .catch(function (error) {
             console.error(error);
-        });
+          });
       });
     }
 
     var filteredUsers = users;
     // 搜索框输入元素
-    var searchInput = document.querySelector('.search-box input');
+    var searchInput = document.querySelector(".search-box input");
 
     // 搜索功能
     function searchUsers(event) {
       // 检查是否按下了回车键
       if (event.keyCode === 13) {
         const searchValue = searchInput.value.trim().toLowerCase();
-        if(searchValue === "") {
-          const table = document.getElementById('userTable');
-          table.innerHTML = ''
+        if (searchValue === "") {
+          const table = document.getElementById("userTable");
+          table.innerHTML = "";
           renderUsers();
           return;
         }
         // 过滤用户列表
-        filteredUsers = users.filter(user => user.userId.toLowerCase().includes(searchValue));
-        console.log(filteredUsers);
+        filteredUsers = users.filter((user) =>
+          user.userId.toLowerCase().includes(searchValue)
+        );
         // 重新渲染表格
         renderfilteredUsers();
       }
     }
 
     // 给搜索框添加事件监听器
-    searchInput.addEventListener('keyup', searchUsers);
+    searchInput.addEventListener("keyup", searchUsers);
 
     // 重新渲染用户列表的函数，现在接受一个用户数组
     function renderfilteredUsers() {
-      const table = document.getElementById('userTable');
+      const table = document.getElementById("userTable");
       if (filteredUsers.length === 0) {
         // 如果没有搜索结果，清空表格并添加提示信息
-        table.innerHTML = '';
+        table.innerHTML = "";
         const headerRow = table.insertRow();
         const headerCell = headerRow.insertCell(0);
         headerCell.colSpan = 6; // 根据列的数量设置 colspan
-        headerCell.textContent = '没有找到用户';
+        headerCell.textContent = "没有找到用户";
         return;
       } else {
         // 清空现有行
-        table.innerHTML = '';
+        table.innerHTML = "";
         // 遍历 filteredUsers 而不是原来的 users 数组
-        filteredUsers.forEach(user => {
+        filteredUsers.forEach((user) => {
           const row = table.insertRow();
-          row.setAttribute('data-user-id', user.userId); // 添加data属性
+          row.setAttribute("data-user-id", user.userId); // 添加data属性
           const userIdCell = row.insertCell(0);
           const nameCell = row.insertCell(1);
           const typeCell = row.insertCell(2);
@@ -883,30 +1033,30 @@
           nameCell.textContent = user.name;
           typeCell.textContent = user.type;
 
-          let disableButton = document.createElement('button');
-          disableButton.textContent = user.disable ? 'Enable' : 'Disable';
-          if(user.disable) {
-            disableButton.classList.add('abledbtn'); // 添加可用样式
+          let disableButton = document.createElement("button");
+          disableButton.textContent = user.disable ? "Enable" : "Disable";
+          if (user.disable) {
+            disableButton.classList.add("abledbtn"); // 添加可用样式
           } else {
-            disableButton.classList.add('disabledbtn'); // 添加禁用样式
+            disableButton.classList.add("disabledbtn"); // 添加禁用样式
           }
-          disableButton.onclick = function() {
+          disableButton.onclick = function () {
             toggleDisableUser(user.userId, disableButton);
           };
           disableCell.appendChild(disableButton);
-          
-          let resetButton = document.createElement('button');
-          resetButton.textContent = 'reset';
-          resetButton.classList.add('resetbtn'); // 添加重置密码样式
-          resetButton.onclick = function() {
+
+          let resetButton = document.createElement("button");
+          resetButton.textContent = "reset";
+          resetButton.classList.add("resetbtn"); // 添加重置密码样式
+          resetButton.onclick = function () {
             toggleresetUser(user.userId);
           };
           resetCell.appendChild(resetButton);
 
-          let deleteButton = document.createElement('button');
-          deleteButton.textContent = 'Delete';
-          deleteButton.classList.add('deletebtn'); // 添加删除用户样式
-          deleteButton.onclick = function() {
+          let deleteButton = document.createElement("button");
+          deleteButton.textContent = "Delete";
+          deleteButton.classList.add("deletebtn"); // 添加删除用户样式
+          deleteButton.onclick = function () {
             deleteUser(user.userId);
           };
           deleteCell.appendChild(deleteButton);

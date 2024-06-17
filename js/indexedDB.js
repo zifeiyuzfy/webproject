@@ -37,14 +37,11 @@ function openDB(dbName, version = 1) {
         objectStore.createIndex("password", "password", { unique: false });
         objectStore.createIndex("type", "type", { unique: false });
         objectStore.createIndex("name", "name", { unique: false });
-        objectStore.createIndex("submittedlist", "submittedlist", {
-          unique: false,
-        });
-        objectStore.createIndex("unsubmittedlist", "unsubmittedlist", {
-          unique: false,
-        });
         objectStore.createIndex("disable", "disable", { unique: false });
         objectStore.createIndex("isAllowRegister", "isAllowRegister", {
+          unique: false,
+        });
+        objectStore.createIndex("pendingdeal", "pendingdeal", {
           unique: false,
         });
       }

@@ -1,0 +1,94 @@
+/* 重置浏览器默认样式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  background-color: #f7f7f7;
+  color: #333;
+  /* 使用Flexbox居中并扩展整个视口 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* 水平居中所有子元素 */
+  min-height: 100vh;
+  padding: 20px;
+  background-image: url("../static/background.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2.5em;
+  color: #333;
+}
+
+#historyContainer {
+  width: 80%;
+  max-width: 1000px;
+  margin-bottom: 20px;
+  /* 仅底部外边距 */
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  text-align: justify;
+}
+
+#historyContainer p {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e1e1e1;
+  padding-bottom: 20px;
+  font-size: 1em;
+  color: #333;
+}
+
+#returnButton {
+  display: block;
+  width: 200px;
+  padding: 10px;
+  font-size: 16px;
+  color: #fff;
+  background-image: linear-gradient(to right, #007bff, #0056b3);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  outline: none;
+  margin: 40px auto 0;
+  /* 放在底部，自动左右居中 */
+}
+
+#returnButton:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 2em;
+  }
+
+  #historyContainer {
+    width: 95%;
+  }
+
+  #returnButton {
+    width: 90%;
+  }
+}

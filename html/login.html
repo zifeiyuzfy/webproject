@@ -3,9 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>web辅助平台</title>
+    <title>Web课程教学辅助系统</title>
     <link rel="stylesheet" href="../css/login.css" />
-    <!-- 引用两种加密库（仍选其一进行加密即可） -->
     <script src="http://172.31.73.236/assets/crypto-js.min.js"></script>
     <script src="http://172.31.73.236/assets/sm3.js"></script>
     <script src="../js/indexedDB.js"></script>
@@ -113,16 +112,10 @@
       let db;
       openDB("OJSystemDB", 1).then(function (db) {
         db = db;
-        console.log(db);
         //查找teacher的数据
         cursorGetDataByIndex(db, "user", "type", "teacher")
           .then(function (indexData) {
-            console.log("cursorGetDataByIndex=" + indexData);
             if (indexData !== false) {
-              // indexData.forEach(element => {
-              //     console.log(element.userId);
-              //     console.log(element.password);
-              // });
               var i;
               for (i = 0; i < indexData.length; i++) {
                 if (indexData[i].type == "teacher") {
@@ -197,7 +190,6 @@
           .then(function (db) {
             getDataByKey(db, "user", stuid.toString())
               .then(function (userData) {
-                console.log(userData.userId);
                 //用户不存在getDataByKey
                 if (userData === false) {
                   swal("用户不存在", "", "error");
@@ -206,16 +198,18 @@
                     swal("密码错误", "", "error");
                   } else if (userData.disable === true) {
                     swal("该账户已被禁用", "", "error");
-                  } else {                    
-                    window.location.href =
-                      "../html/index.html?userId=" + stuid.toString();
+                  } else {
+                    window.location.href = "../html/index.html";
+                    window.userId = stuid.toString();
+                    // 存储 userId
+                    localStorage.setItem("userId", userId);
+                    localStorage.setItem("password", password);
                   }
                 }
               })
               .catch(function (error) {
                 console.error(error);
               });
-            // swal("学号：" + stuid + "\n加密后的密码是：" + encryptedPassword);
             closeDB(db);
           })
           .catch(function (error) {

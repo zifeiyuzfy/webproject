@@ -2,278 +2,133 @@
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <title>课程通知</title>
-    <!-- <link rel="stylesheet" href="../css/announcement.css" /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web课程教学辅助系统</title>
+    <link rel="stylesheet" href="../css/announcement.css" />
+    <link rel="stylesheet" href="../css/font-awesome.css" />
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      type="text/css"
+      href="http://css.huangwx.cn/css/sweetalert.css"
     />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"
-    />
-    <style>
-      body {
-        font-family: "Arial", sans-serif;
-        line-height: 1.6;
-        color: #333;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 20px;
-      }
-      header {
-        background: #5a738e;
-        color: #fff;
-        padding: 10px 20px;
-        text-align: center;
-        border-bottom: 3px solid #ddd;
-      }
-      header h1 {
-        margin: 0;
-      }
-
-      #backButton {
-        position: absolute;
-        left: 20px;
-        top: 35px;
-        padding: 5px 10px;
-        cursor: pointer;
-        background-color: #5a738e;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        transition: background-color 0.3s;
-        font-size: 1.4rem; /* 设置字体大小以适应箭头大小 */
-      }
-
-      #backButton::before {
-        content: "\2190"; /* 箭头左指的Unicode字符 */
-        display: inline-block;
-        margin-right: 8px;
-        vertical-align: middle;
-      }
-
-      #backButton:hover {
-        background-color: #4993e2;
-      }
-
-      #announcementsContainer {
-        margin: 20px auto;
-        padding: 0;
-        max-width: 800px; /* 限制最大宽度 */
-        background: #fff;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-      }
-
-      .announcement {
-        margin-bottom: 1rem;
-        padding: 1.5rem;
-        border-bottom: 1px solid #eee;
-        background-color: #fff;
-        border-radius: 4px;
-      }
-
-      .announcement:first-of-type {
-        border-top-left-radius: 8px;
-        border-top-right-radius: 8px;
-      }
-
-      .announcement:last-of-type {
-        border-bottom: none;
-        border-bottom-left-radius: 8px;
-        border-bottom-right-radius: 8px;
-      }
-
-      /* 分页导航样式 */
-      #pagination {
-        display: flex;
-        justify-content: center;
-        margin-top: 20px;
-      }
-
-      #pagination button {
-        margin: 0 5px;
-        padding: 8px 15px;
-        cursor: pointer;
-        border: 1px solid #007bff;
-        background-color: #fff;
-        color: #007bff;
-        border-radius: 4px;
-        transition: background-color 0.3s, color 0.3s;
-      }
-
-      #pagination button:hover,
-      #pagination button:focus {
-        background-color: #007bff;
-        color: #fff;
-      }
-
-      #pagination button.active {
-        background-color: #007bff;
-        color: #fff;
-      }
-
-      /* 响应式设计 */
-      @media (max-width: 768px) {
-        #announcementsContainer {
-          margin: 10px;
-          padding: 10px;
-        }
-
-        .announcement {
-          padding: 1rem;
-        }
-
-        #pagination button {
-          padding: 6px 12px;
-        }
-      }
-    </style>
-    <!-- <script src="../js/announcement.js"></script> -->
+    <script
+      type="text/javascript"
+      src="http://css.huangwx.cn/js/sweetalert-dev.js"
+    ></script>
+    <script src="http://172.31.73.236/assets/crypto-js.min.js"></script>
     <script src="../js/indexedDB.js"></script>
+    <script src="../js/announcement.js" defer></script>
   </head>
   <body>
-    <header>
-      <button id="backButton" title="返回首页">返回</button>
-      <h1>所有课程通知</h1>
-    </header>
+    <div class="navbar">
+      <input type="checkbox" id="checkbox" />
+      <!-- 复选框的id属性值和label元素的for属性值必须是相同的,才能够通过点击label选中复选框 -->
+      <label for="checkbox">
+        <i class="fa fa-bars"></i>
+      </label>
 
-    <section id="announcementsContainer"></section>
+      <ul>
+        <li>
+          <img src="../static/house.webp" alt="" />
+          <span>Web校验平台</span>
+        </li>
+        <li class="active">
+          <a href="../html/index.html">
+            <i class="fa fa-home"></i>
+            <span>首页</span>
+          </a>
+        </li>
+        <li>
+          <a href="../html/submit.html">
+            <i class="fa fa-location-arrow"></i>
+            <span>提交问题</span>
+          </a>
+        </li>
+        <li>
+          <a href="../html/publish.html">
+            <i class="fa fa-edit"></i>
+            <span>发布问题</span>
+          </a>
+        </li>
+        <li>
+          <a href="../html/usermanagementpage.html">
+            <i class="fa fa-user"></i>
+            <span>用户管理</span>
+          </a>
+        </li>
+      </ul>
+      <div class="toolkit">
+        <a href="#"> </a>
+      </div>
+    </div>
+    <div id="user-info" class="user-info">
+      <img
+        src="../static/user.jpg"
+        alt="用户头像"
+        id="user-avatar"
+        class="user-avatar"
+      />
+      <div id="user-actions" class="user-actions"></div>
+    </div>
+    <div class="top-title"></div>
 
-    <nav id="pagination" aria-label="Page navigation"></nav>
+    <!-- 这是放正文的地方 -->
+    <div class="main-container">
+      <main class="main-content">
+        <a href="../html/index.html" id="backButton" title="返回首页">
+          <i class="fa fa-arrow-left"></i> 返回
+        </a>
+        <section id="announcement-list">
+          <h2>课程通知列表</h2>
+          <div id="search-container">
+            <input
+              type="text"
+              id="site-search"
+              placeholder="输入课程标题进行搜索..."
+            />
+            <button id="search-button" onclick="onSearchInput()">搜索</button>
+            <button id="reset-button" onclick="resetSearch()">重置</button>
+          </div>
+          <ul id="announcementListUl"></ul>
+        </section>
+      </main>
+    </div>
+
+    <!-- 个人中心模态窗口 -->
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>个人信息</h2>
+        </div>
+        <div class="modal-body">
+          <form>
+            <label for="avatar">头像:</label>
+            <input type="file" id="avatar" name="avatar" accept="image/*" />
+            <img
+              src="../static/user.jpg"
+              alt="预览头像"
+              id="profile-avatar-preview"
+              style="width: 100px; height: 100px; margin-bottom: 20px"
+            />
+            <label for="nickname">昵称:</label>
+            <input type="text" id="nickname" name="nickname" />
+            <label for="password">密码:</label>
+            <input type="text" id="password" name="password" />
+            <label for="signature">签名档:</label>
+            <textarea id="signature" name="signature"></textarea>
+            <label for="todo">个人待办事项:</label>
+            <textarea id="todo" name="todo"></textarea>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button id="saveProfile">保存</button>
+          <button id="cancelProfile">取消</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2024 Web课程教学辅助系统</p>
+    </footer>
   </body>
-  <script>
-    // 确保已定义db变量
-    let db;
-    const backButton = document.getElementById("backButton");
-    const announcementsContainer = document.getElementById(
-      "announcementsContainer"
-    );
-    const pagination = document.getElementById("pagination");
-    const announcementsPerPage = 10;
-    let currentPage = 1;
-    let allAnnouncements = []; // 存储从IndexedDB获取的所有公告
-
-    // 为返回按钮添加点击事件处理器
-    backButton.addEventListener("click", function () {
-      window.location.href = "../html/index.html"; // 点击后跳转到首页
-    });
-
-    // 从IndexedDB获取所有公告并存储
-    function fetchAnnouncements() {
-      cursorGetData(db, "announcement")
-        .then((announcements) => {
-          // 按日期对公告进行降序排序
-          allAnnouncements = announcements.sort(
-            (a, b) => new Date(b.date) - new Date(a.date)
-          );
-          displayAnnouncements(); // 获取公告后显示第一页的内容
-        })
-        .catch((error) => {
-          console.error("获取公告失败:", error);
-        });
-    }
-
-    // 显示公告并进行分页
-    function displayAnnouncements() {
-      // 清空现有内容
-      announcementsContainer.innerHTML = "";
-      // 计算当前页的起始和结束索引
-      const startIndex = (currentPage - 1) * announcementsPerPage;
-      const endIndex = Math.min(
-        startIndex + announcementsPerPage,
-        allAnnouncements.length
-      );
-
-      // 显示当前页的公告
-      for (let i = startIndex; i < endIndex; i++) {
-        const announcement = allAnnouncements[i];
-        const announcementEl = document.createElement("div");
-        announcementEl.className = "announcement";
-        announcementEl.innerHTML = `
-          <h3>${announcement.title}</h3>
-          <p>${announcement.content}</p>
-          <p>${announcement.date}</p>
-        `;
-        announcementsContainer.appendChild(announcementEl);
-      }
-
-      // 更新分页导航
-      updatePagination();
-    }
-
-    // 更新分页导航
-    function updatePagination() {
-      // 清空现有分页按钮
-      pagination.innerHTML = "";
-
-      const totalPages = Math.ceil(
-        allAnnouncements.length / announcementsPerPage
-      );
-      let paginationHtml = "";
-
-      // 添加“上一页”按钮
-      paginationHtml += `
-    <li class="material-icons page-btn page-btn-prev ${
-      currentPage === 1 ? "disabled" : "isClick"
-    }">
-      keyboard_arrow_left
-    </li>
-  `;
-
-      // 添加分页数字按钮
-      for (let i = 1; i <= totalPages; i++) {
-        const activeClass = i === currentPage ? "active" : "";
-        paginationHtml += `
-      <li class="page-number ${activeClass}">${i}</li>
-    `;
-      }
-
-      // 添加“下一页”按钮
-      paginationHtml += `
-    <li class="material-icons page-btn page-btn-next ${
-      currentPage === totalPages ? "disabled" : "isClick"
-    }">
-      keyboard_arrow_right
-    </li>
-  `;
-
-      // 设置分页导航的 HTML
-      pagination.innerHTML = paginationHtml;
-
-      // 为分页按钮添加事件监听器
-      const pageBtns = pagination.querySelectorAll(".page-btn");
-      pageBtns.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          if (!btn.classList.contains("disabled")) {
-            const nextPage = btn.classList.contains("page-btn-prev")
-              ? currentPage - 1
-              : currentPage + 1;
-            goToPage(nextPage);
-          }
-        });
-      });
-
-      // 为分页数字按钮添加事件监听器
-      const pageNumbers = pagination.querySelectorAll(".page-number");
-      pageNumbers.forEach((number) => {
-        number.addEventListener("click", () => {
-          goToPage(parseInt(number.textContent));
-        });
-      });
-    }
-
-    // 当页面加载完成时触发
-    document.addEventListener("DOMContentLoaded", function () {
-      openDB("OJSystemDB", 1)
-        .then((dbInstance) => {
-          db = dbInstance;
-          fetchAnnouncements(); // 获取并显示公告
-        })
-        .catch((error) => {
-          console.error("数据库初始化失败:", error);
-        });
-    });
-  </script>
 </html>

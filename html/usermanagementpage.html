@@ -780,7 +780,7 @@
             studentsData.forEach((student) => {
               users.push(student);
             });
-            freeRegisterBtn.textContent = users[0].isAllowRegister
+            freeRegisterBtn.textContent = studentsData[0].isAllowRegister
               ? "关闭注册"
               : "开启注册";
             freeRegisterBtn.classList.add("freeRegisterbtn"); // 添加重置密码样式
@@ -821,7 +821,7 @@
                     users.forEach((user) => {
                       user.isAllowRegister = !user.isAllowRegister;
                     });
-                    freeRegisterBtn.textContent = users[0].isAllowRegister
+                    freeRegisterBtn.textContent = updateData.isAllowRegister
                       ? "关闭注册"
                       : "开启注册";
                     swal("切换成功", "", "success");

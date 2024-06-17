@@ -148,8 +148,8 @@
       .getElementById("guestEntry")
       .addEventListener("click", function () {
         event.preventDefault(); // 阻止表单默认提交行为
-        var userId = "0";
-        window.location.href = "../html/index.html?userId=" + userId;
+        localStorage.setItem("userId", "0");
+        window.location.href = "../html/index.html";
       });
     // 实时验证账号
     function validateStuid(input) {
